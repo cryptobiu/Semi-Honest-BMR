@@ -1,0 +1,92 @@
+﻿Build started 01/02/2016 13:38:34.
+     1>Project "C:\Users\Dell\Documents\Visual Studio 2015\Projects\OTExtension\OTExtnsion\OTExtnsion\OTExtnsion.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"x64\Release\\" /Fd"x64\Release\vc140.pdb" /Gd /TP /errorReport:prompt BMR.cpp
+         BMR.cpp
+     1>c:\users\dell\documents\visual studio 2015\projects\otextension\otextnsion\otextnsion\../util/socket.h(88): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+         C:\Program Files (x86)\Windows Kits\8.1\Include\um\WinSock2.h(1868): note: see declaration of 'inet_ntoa'
+     1>c:\users\dell\documents\visual studio 2015\projects\otextension\otextnsion\otextnsion\../util/socket.h(113): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+         C:\Program Files (x86)\Windows Kits\8.1\Include\um\WinSock2.h(1850): note: see declaration of 'inet_addr'
+     1>c:\users\dell\documents\visual studio 2015\projects\otextension\otextnsion\otextnsion\../util/socket.h(118): warning C4996: 'gethostbyname': Use getaddrinfo() or GetAddrInfoW() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+         C:\Program Files (x86)\Windows Kits\8.1\Include\um\WinSock2.h(2238): note: see declaration of 'gethostbyname'
+     1>c:\users\dell\documents\visual studio 2015\projects\otextension\otextnsion\otextnsion\../util/socket.h(163): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+         C:\Program Files (x86)\Windows Kits\8.1\Include\um\WinSock2.h(1850): note: see declaration of 'inet_addr'
+     1>c:\users\dell\documents\visual studio 2015\projects\otextension\otextnsion\otextnsion\../util/socket.h(168): warning C4996: 'gethostbyname': Use getaddrinfo() or GetAddrInfoW() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+         C:\Program Files (x86)\Windows Kits\8.1\Include\um\WinSock2.h(2238): note: see declaration of 'gethostbyname'
+     1>c:\users\dell\documents\visual studio 2015\projects\otextension\otextnsion\otextnsion\myDefs.h(61): warning C4005: 'MULTIPLICATION_TYPE': macro redefinition
+         c:\users\dell\documents\visual studio 2015\projects\otextension\otextnsion\otextnsion\myDefs.h(41): note: see previous definition of 'MULTIPLICATION_TYPE'
+     1>BMR.cpp(120): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+         C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt\string.h(119): note: see declaration of 'strcpy'
+     1>BMR.cpp(164): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+         C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt\stdio.h(205): note: see declaration of 'fopen'
+     1>BMR.cpp(177): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+         C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt\stdio.h(2254): note: see declaration of 'sscanf'
+     1>BMR.cpp(203): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+         C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt\string.h(119): note: see declaration of 'strcpy'
+     1>BMR.cpp(269): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(285): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(307): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(429): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(450): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(492): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(526): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(535): warning C4805: '^=': unsafe mix of type 'bool' and type 'unsigned int' in operation
+     1>BMR.cpp(535): warning C4805: '^': unsafe mix of type 'bool' and type 'unsigned int' in operation
+     1>BMR.cpp(535): warning C4800: 'unsigned int': forcing value to bool 'true' or 'false' (performance warning)
+     1>BMR.cpp(579): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(594): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(654): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(684): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(693): warning C4805: '^=': unsafe mix of type 'bool' and type 'unsigned int' in operation
+     1>BMR.cpp(693): warning C4805: '^': unsafe mix of type 'bool' and type 'unsigned int' in operation
+     1>BMR.cpp(693): warning C4800: 'unsigned int': forcing value to bool 'true' or 'false' (performance warning)
+     1>BMR.cpp(820): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(884): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(995): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(1053): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(1062): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(1186): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(1364): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(1601): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(1667): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(1718): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(1757): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(1874): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(1919): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(1939): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(2020): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(2108): warning C4018: '<': signed/unsigned mismatch
+     1>BMR.cpp(2274): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+         C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt\stdio.h(205): note: see declaration of 'fopen'
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Dell\Documents\Visual Studio 2015\Projects\OTExtension\OTExtnsion\x64\Release\OTExtnsion.exe" /INCREMENTAL:NO /NOLOGO miracl.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\Dell\Documents\Visual Studio 2015\Projects\OTExtension\OTExtnsion\x64\Release\OTExtnsion.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG:incremental /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Dell\Documents\Visual Studio 2015\Projects\OTExtension\OTExtnsion\x64\Release\OTExtnsion.lib" /MACHINE:X64 "x64\Release\asharov-lindell.obj"
+         x64\Release\baseOT.obj
+         x64\Release\brick.obj
+         "x64\Release\double-exp.obj"
+         "x64\Release\naor-pinkas.obj"
+         "x64\Release\naor-pinkas_noro.obj"
+         "x64\Release\ot-extension.obj"
+         x64\Release\aes_core.obj
+         x64\Release\cbitvector.obj
+         x64\Release\main_gf_funcs.obj
+         x64\Release\sha1.obj
+         x64\Release\TedKrovetzAesNiWrapperC.obj
+         x64\Release\basicSockets.obj
+         x64\Release\BMR.obj
+         x64\Release\BMR_BGW.obj
+         x64\Release\BMR_BGW_aux.obj
+         x64\Release\main.obj
+         x64\Release\ottmain.obj
+         x64\Release\secCompMultiParty.obj
+         x64\Release\stdafx.obj
+         Generating code
+         2 of 1131 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+           0 functions were new in current compilation
+           24 functions had inline decision re-evaluated but remain unchanged
+         Finished generating code
+         OTExtnsion.vcxproj -> C:\Users\Dell\Documents\Visual Studio 2015\Projects\OTExtension\OTExtnsion\x64\Release\OTExtnsion.exe
+     1>Done Building Project "C:\Users\Dell\Documents\Visual Studio 2015\Projects\OTExtension\OTExtnsion\OTExtnsion\OTExtnsion.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.31
