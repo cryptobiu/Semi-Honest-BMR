@@ -553,7 +553,7 @@ void CBitVector::EklundhBitTranspose(int rows, int columns)
 	lim = (REGISTER_SIZE*) m_pBits + CEIL_DIVIDE(rows * columns, 8);
 
 	int offset = (columns >> 3) / sizeof(REGISTER_SIZE);
-	int numiters = CEIL_LOG2(rows);
+	int numiters = CEIL_LOG_TWO(rows);
 	int srcidx = 1, destidx;
 	int rounds;
 	int p;

@@ -11,7 +11,6 @@
 #define _MPC_H_
 
 #include "typedefs.h"
-#include "socket.h"
 //#include "../ot/naor-pinkas.h"
 //#include "../ot/asharov-lindell.h"
 //#include "../ot/ot-extension.h"
@@ -31,7 +30,11 @@
 #include <emmintrin.h>
 #include <random>
 #include <stdint.h>
+#include "../../libscapi/include/interactive_mid_protocols/OTExtensionBristol.hpp"
 //#include <thread>
+#define OT_PORT 12001
+#define COMPARE_FUNCTIONALITY_SERVER_PORT 1212
+#define COMPARE_FUNCTIONALITY_CLIENT_PORT 1213
 
 using namespace std;
 
@@ -40,7 +43,13 @@ class OTclass{
 private:
 	USHORT		m_nPort;// = 7766;
 	const char* m_nAddr;// = "localhost";
-
+/*	boost::asio::io_service m_ioService;
+	SocketPartyData m_spMe;
+	SocketPartyData m_spOther;
+    shared_ptr<CommParty> m_cpChannel;
+    OTExtensionBristolSender* m_otSender;
+    OTExtensionBristolReciever* m_otReceiver;
+*/
 	// Network Communication
 //	vector<CSocket> m_vSockets;
 	int m_nPID; // thread id
@@ -78,8 +87,8 @@ private:
 //	BOOL Connect(int initialSocketNum, int port);
 //	BOOL Listen(int initialSocketNum, int port);
 
-//	OTExtensionSender* InitOTSender(const char* address, int port, int initialSocketNum);
-//	OTExtensionReceiver* InitOTReceiver(const char* address, int port, int initialSocketNum);
+	void InitOTSender();
+	void InitOTReceiver();
 
 	//BOOL PrecomputeNaorPinkasSender();
 	//BOOL PrecomputeNaorPinkasReceiver();

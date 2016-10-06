@@ -14,14 +14,14 @@
 #define NUMOTBLOCKS 32
 
 
-static int CEIL_LOG2(int bits)
+static int CEIL_LOG_TWO(int bits)
 {
 	int targetlevel = 0, bitstemp = bits;
 	while (bitstemp >>= 1) ++targetlevel;
 	return targetlevel + ((1<<targetlevel) > bits);
 }
 
-static int FLOOR_LOG2(int bits)
+static int FLOOR_LOG_TWO(int bits)
 {
 	int targetlevel = 0;
 	while (bits >>= 1) ++targetlevel;
@@ -51,7 +51,7 @@ typedef ULONG	DWORD;
 typedef UINT_64T REGISTER_SIZE;
 
 typedef REGISTER_SIZE REGSIZE;
-#define LOG2_REGISTER_SIZE		CEIL_LOG2(sizeof(REGISTER_SIZE) << 3)
+#define LOG2_REGISTER_SIZE		(sizeof(REGISTER_SIZE) << 3)
 
 #define SHA1_BYTES				20
 #define SHA1_BITS				160
@@ -60,7 +60,7 @@ typedef REGISTER_SIZE REGSIZE;
 #define AES_KEY_BYTES			16
 #define AES_BITS				128
 #define AES_BYTES				16
-#define LOG2_AES_BITS			CEIL_LOG2(AES_BITS)
+#define LOG2_AES_BITS			CEIL_LOG_TWO(AES_BITS)
 
 #define FILL_BYTES				AES_BYTES
 #define FILL_BITS				AES_BITS
@@ -175,7 +175,7 @@ typedef int socklen_t;
 
 
 
-#include <sys/types.h>       
+#include <sys/types.h>
 #include <sys/socket.h>      
 #include <netdb.h>           
 #include <arpa/inet.h>       

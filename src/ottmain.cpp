@@ -189,46 +189,27 @@ listen_failure:
 	return FALSE;
 }
 
-
-OTExtensionSender* OTclass::InitOTSender(const char* address, int port, int initialSocketNum)
+*/
+void OTclass::InitOTSender()
 {
-	int nSndVals = 2;
+    /*m_spMe = SocketPartyData(IpAdress::from_string("127.0.0.1"), COMPARE_FUNCTIONALITY_SERVER_PORT);
+    m_spOther = SocketPartyData(IpAdress::from_string(m_nAddr), COMPARE_FUNCTIONALITY_CLIENT_PORT);
+    m_cpChannel = make_shared<CommPartyTCPSynced>(m_ioService, m_spMe, m_spOther);
 
-	vKeySeeds = (BYTE*)malloc(AES_KEY_BYTES*NUM_EXECS_NAOR_PINKAS);
-
-	//Initialize values
-	Init();
-
-	//Server listen
-	Listen(initialSocketNum, m_nPort);
-	
-	PrecomputeNaorPinkasSender();
-
-	sender = new OTExtensionSender(nSndVals, m_vSockets.data(), U, vKeySeeds);
-
-	return sender;
+    m_cf_channel->join(500, 5000);
+    m_otSender = new OTExtensionBristolSender(OT_PORT, true, m_cpChannel);*/
 }
 
-OTExtensionReceiver* OTclass::InitOTReceiver(const char* address, int port, int initialSocketNum)
-{
-	int nSndVals = 2;
-	timeval np_begin, np_end;
+void OTclass::InitOTReceiver()
+{/*
+    m_spMe = SocketPartyData(IpAdress::from_string("127.0.0.1"), COMPARE_FUNCTIONALITY_SERVER_PORT);
+    m_spOther = SocketPartyData(IpAdress::from_string(m_nAddr), COMPARE_FUNCTIONALITY_CLIENT_PORT);
+    m_cpChannel = make_shared<CommPartyTCPSynced>(m_ioService, m_spMe, m_spOther);
 
-	vKeySeedMtx = (BYTE*)malloc(AES_KEY_BYTES*NUM_EXECS_NAOR_PINKAS * nSndVals);
-
-	//Initialize values
-	Init();
-
-	//Client connect
-	Connect(initialSocketNum, m_nPort);
-
-	PrecomputeNaorPinkasReceiver();
-
-	receiver = new OTExtensionReceiver(nSndVals, m_vSockets.data(), vKeySeedMtx, m_aSeed);
-
-	return receiver;
+    m_cf_channel->join(500, 5000);
+    m_otReceiver = new OTExtensionBristolReciever(Globals::m_serverIP, OT_PORT, true, m_cf_channel);*/
 }
-
+/*
 BOOL OTclass::PrecomputeNaorPinkasSender()
 {
 
@@ -305,7 +286,9 @@ BOOL OTclass::ObliviouslyReceive(CBitVector& choices, CBitVector& ret, int numOT
 */
 
 BOOL OTclass::Initialize()
-{/*
+{
+
+/*
 	if (m_nPID == 0) //Play as OT sender
 	{
 		InitOTSender(m_nAddr, m_nPort, 0);

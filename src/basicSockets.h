@@ -6,11 +6,13 @@
  * 	Modified: Aner Ben-Efraim
  * 
  */
+#ifndef BMRNET_H_
+#define BMRNET_H_
 #include <stdio.h>
 #include <stropts.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
-#include <linux/netdevice.h>
+#include <net/if.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <unistd.h>
@@ -18,8 +20,6 @@
 #include "secCompMultiParty.h"
 using namespace std;
 
-#ifndef BMRNET_H_
-#define BMRNET_H_
 
 #ifdef _WIN32
  #include<winsock2.h>

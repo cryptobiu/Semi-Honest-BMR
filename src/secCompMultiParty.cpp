@@ -307,7 +307,7 @@ Circuit * readCircuitFromFile(char * path)
 			// Init Circuit struct
 			cycleTR = (Circuit*)malloc(sizeof(Circuit));
 			cycleTR->gateArray = (Gate *)malloc(sizeof(Gate)*gateAmount);
-			cycleTR->playerArray = (Player *)malloc(sizeof(Player)*playerAmount);
+			cycleTR->playerArray = (aPlayer *)malloc(sizeof(aPlayer)*playerAmount);
 			
 			cycleTR->allWires = (Wire *)malloc(sizeof(Wire)*wiresAmount+2 );//+2 for one and zero
 			for (int i = 0; i < wiresAmount; i++)
@@ -365,7 +365,7 @@ Circuit * readCircuitFromFile(char * path)
 				playerCounter++;
 			}
 			else{
-				printf("Error: Player header expected. e.g P1 32");
+				printf("Error: aPlayer header expected. e.g P1 32");
 				return NULL;
 			}
 
@@ -568,7 +568,7 @@ void freeGate(Gate* gate)
 
 }
 
-void freePlayer(Player p)
+void freePlayer(aPlayer p)
 {
 	delete[] p.playerBitArray;
 	delete[] p.playerWires;

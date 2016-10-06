@@ -106,7 +106,7 @@ typedef struct player {
 
 	//replaced by
 	Wire **playerWires;//The input wires of the player (or the output wires of the circuit)
-} Player;
+} aPlayer;
 
 /*
 * This struct represents one gate with two input wires, one output wire and a Truth table.
@@ -165,8 +165,8 @@ typedef struct circuit {
 	//number of wires
 	unsigned int amountOfWire;
 
-	Player * playerArray;//input wires of each player
-	Player outputWires;// the output wires of the cycle
+	aPlayer * playerArray;//input wires of each player
+	aPlayer outputWires;// the output wires of the cycle
 
 	
 	unsigned int numOfOutputWires;

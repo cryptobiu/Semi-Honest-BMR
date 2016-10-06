@@ -104,7 +104,7 @@ void freeCircle(Circuit * c);
 void freeCircuitPartial(Circuit * c);
 void freeWire(Wire w);
 void freeGate(Gate gate);
-void freePlayer(Player p);
+void freePlayer(aPlayer p);
 
 void printVersion(int hm);
 

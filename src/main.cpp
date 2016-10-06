@@ -15,7 +15,7 @@ using namespace std;
 1. A file specifying the circuit, number of players, input wires, output wires
 2. A file specifying the connection details
 3. A file specifying the current player, inputs
-4. Player number
+4. aPlayer number
 5. Random seed
 */
 int main(int argc, char** argv)

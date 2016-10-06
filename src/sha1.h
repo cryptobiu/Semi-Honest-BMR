@@ -39,9 +39,9 @@ struct sha1_context
     unsigned char ipad[64];     /*!< HMAC: inner padding        */
     unsigned char opad[64];     /*!< HMAC: outer padding        */
 };
- 
-typedef sha1_context SHA_CTX;
- 
+
+//typedef sha1_context SHA_CTX;
+
 /**
  * \brief          SHA-1 context setup
  *
