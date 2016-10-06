@@ -1,0 +1,2 @@
+mkdir -p obj/
+g++ obj/*.o obj/*.o obj/*.o obj/*.o obj/*.o obj/*.o obj/*.o obj/*.o obj/*.o obj/*.o obj/*.o obj/*.o ../../libscapi/scapi.a ../../libscapi/install/lib/libmiracl.a ../../libscapi/install/lib/libOTExtensionBristol.a ../../libscapi/install/lib/libsimpleot.a -L../../libscapi/install/lib -L../../boost_1_60_0/stage/lib -lpthread -lgmp -lcrypto -lssl -lboost_system -lntl -lboost_thread -lOTExtension -lMaliciousOTExtension -lOTExtensionBristol -ldl -lmiracl -o main.exe
