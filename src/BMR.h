@@ -21,7 +21,7 @@
 
 using namespace std;
 
-#define func(a,b)           a+(8-a%8)//a//
+//#define func(a,b)           a+(8-a%8)//a//
 #define PAD(a,padTo)		a+(padTo-a%padTo)//a//
 
 

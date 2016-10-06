@@ -192,12 +192,12 @@ listen_failure:
 */
 void OTclass::InitOTSender()
 {
-    /*m_spMe = SocketPartyData(IpAdress::from_string("127.0.0.1"), COMPARE_FUNCTIONALITY_SERVER_PORT);
+    m_spMe = SocketPartyData(IpAdress::from_string("127.0.0.1"), COMPARE_FUNCTIONALITY_SERVER_PORT);
     m_spOther = SocketPartyData(IpAdress::from_string(m_nAddr), COMPARE_FUNCTIONALITY_CLIENT_PORT);
     m_cpChannel = make_shared<CommPartyTCPSynced>(m_ioService, m_spMe, m_spOther);
 
     m_cf_channel->join(500, 5000);
-    m_otSender = new OTExtensionBristolSender(OT_PORT, true, m_cpChannel);*/
+    m_otSender = new OTExtensionBristolSender(OT_PORT, true, m_cpChannel);
 }
 
 void OTclass::InitOTReceiver()
