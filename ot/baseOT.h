@@ -8,7 +8,7 @@
 #ifndef BASEOT_H_
 #define BASEOT_H_
 
-#include "miracl.h"
+#include "../../libscapi/lib/Miracl/include/miracl.h"
 #include "../util/typedefs.h"
 #include "../util/cbitvector.h"
 #include "../util/socket.h"

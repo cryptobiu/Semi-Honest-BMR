@@ -12,8 +12,8 @@ CPP_FILES     += $(wildcard ot/*.cpp)
 OBJ_FILES     := $(patsubst OTExtnsion/%.cpp,obj/%.o,$(CPP_FILES))
 OBJ_FILES     += $(patsubst util/%.c,obj/%.o,$(CPP_FILES))
 OBJ_FILES     += $(patsubst ot/%.c,obj/%.o,$(CPP_FILES))
-OUT_DIR        = obj obj/OTExtnsion obj/util obj/ot
-INC            = -I../boost_1_60_0 -I../libscapi/lib/ -I../libscapi/lib/OTExtensionBristol -I../libscapi/install/include -Iutil/Miracl -Iutil
+OUT_DIR        = obj #obj/OTExtnsion obj/util obj/ot
+INC            = -I../boost_1_60_0 -I../libscapi/lib/ -I../libscapi/lib/OTExtensionBristol -I../libscapi/install/include -Iutil
 CPP_OPTIONS   := -std=c++11 $(INC) -msse4.1 -pthread -maes -msse2 -mpclmul -fpermissive -fpic
 $(COMPILE.cpp) = g++ -c $(CPP_OPTIONS) -o $@ $<
 LINKER_OPTIONS = $(INCLUDE_ARCHIVES_START) ../libscapi/scapi.a ../libscapi/install/lib/libOTExtensionBristol.a ../libscapi/install/lib/libsimpleot.a -lpthread -lgmp -lcrypto -lssl -lboost_system -lntl \
@@ -21,24 +21,22 @@ LINKER_OPTIONS = $(INCLUDE_ARCHIVES_START) ../libscapi/scapi.a ../libscapi/insta
 $(INCLUDE_ARCHIVES_END)
 
 all:: BMR
-BMR:: directories $(SLib)
+BMR:: directories 
 directories: $(OUT_DIR)
 
 $(OUT_DIR):
 	mkdir -p $(OUT_DIR)
 
 OTExtnsion.out: $(OBJ_FILES)
-	$(CXX) OTExtnsion/main.cpp -o $@ $(OBJS) $(LINKER_OPTIONS)
+	$(CXX) OTExtnsion/main.cpp $(CPP_OPTIONS) -o $@ $(OBJ_FILES) $(LINKER_OPTIONS)
 
-
-%.o: ot/%.cpp
-	$(CXX) -c $< -o $@
 
 %.o :util/%.cpp
-	$(CXX) -c $< -o $@
+	$(CXX) -c $(CPP_OPTIONS) $< -o obj/$@
+
 
 %.o :OTExtnsion/%.cpp
-	$(CXX) -c $< -o $@
+	$(CXX) -c $(CPP_OPTIONS) $< -o obj/$@
 
 
 clean:
