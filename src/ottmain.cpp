@@ -196,18 +196,18 @@ void OTclass::InitOTSender()
     m_spOther = SocketPartyData(IpAdress::from_string(m_nAddr), COMPARE_FUNCTIONALITY_CLIENT_PORT);
     m_cpChannel = make_shared<CommPartyTCPSynced>(m_ioService, m_spMe, m_spOther);
 
-    m_cf_channel->join(500, 5000);
-    m_otSender = new OTExtensionBristolSender(OT_PORT, true, m_cpChannel);
+    m_cpChannel->join(500, 5000);
+    m_otSender = new OTExtensionBristolSender(m_nPort, true, m_cpChannel);
 }
 
 void OTclass::InitOTReceiver()
-{/*
-    m_spMe = SocketPartyData(IpAdress::from_string("127.0.0.1"), COMPARE_FUNCTIONALITY_SERVER_PORT);
-    m_spOther = SocketPartyData(IpAdress::from_string(m_nAddr), COMPARE_FUNCTIONALITY_CLIENT_PORT);
+{
+    m_spMe = SocketPartyData(IpAdress::from_string("127.0.0.1"), COMPARE_FUNCTIONALITY_CLIENT_PORT);
+    m_spOther = SocketPartyData(IpAdress::from_string(m_nAddr), COMPARE_FUNCTIONALITY_SERVER_PORT);
     m_cpChannel = make_shared<CommPartyTCPSynced>(m_ioService, m_spMe, m_spOther);
 
-    m_cf_channel->join(500, 5000);
-    m_otReceiver = new OTExtensionBristolReciever(Globals::m_serverIP, OT_PORT, true, m_cf_channel);*/
+    m_cpChannel->join(500, 5000);
+    m_otReceiver = new OTExtensionBristolReciever("127.0.0.1", m_nPort, true, m_cpChannel);
 }
 /*
 BOOL OTclass::PrecomputeNaorPinkasSender()
@@ -285,43 +285,41 @@ BOOL OTclass::ObliviouslyReceive(CBitVector& choices, CBitVector& ret, int numOT
 }
 */
 
-BOOL OTclass::Initialize()
+void OTclass::Initialize()
 {
-
-/*
+    cout << "intialising" << endl;
 	if (m_nPID == 0) //Play as OT sender
 	{
-		InitOTSender(m_nAddr, m_nPort, 0);
+		InitOTSender();
 	}
 	else
 	{
-		InitOTReceiver(m_nAddr, m_nPort, 0);
+		InitOTReceiver();
 	}
-*/
-	return true;
+    cout << "done intialising" << endl;
 }
 
-BOOL OTclass::OTsend(int bitlength, int numOTs, CBitVector& X1, CBitVector& X2)
+void OTclass::OTsend(int bitlength, int numOTs, CBitVector& X1, CBitVector& X2)
 {
 /*	delta.Create(numOTs, bitlength, m_aSeed, m_nCounter);*/
-	return true;//OTclass::ObliviouslySend(X1, X2, numOTs, bitlength, version, delta);
+	//return true;//OTclass::ObliviouslySend(X1, X2, numOTs, bitlength, version, delta);
 }
 
-BOOL OTclass::OTsendC(int bitlength, int numOTs, CBitVector& X1, CBitVector& X2,CBitVector delta)
+void OTclass::OTsendC(int bitlength, int numOTs, CBitVector& X1, CBitVector& X2,CBitVector delta)
 {
-	return true;//OTclass::ObliviouslySend(X1, X2, numOTs, bitlength, C_OT, delta);
+	//return true;//OTclass::ObliviouslySend(X1, X2, numOTs, bitlength, C_OT, delta);
 }
 
-BOOL OTclass::OTreceive(int bitlength, int numOTs, CBitVector& choices, CBitVector& response)
+void OTclass::OTreceive(int bitlength, int numOTs, CBitVector& choices, CBitVector& response)
 {
 /*	response.Create(numOTs, bitlength);
 	OTclass::ObliviouslyReceive(choices, response, numOTs, bitlength, version);*/
-	return TRUE;
+//	return TRUE;
 }
 //Receiving for correlated OT
-BOOL OTclass::OTreceiveC(int bitlength, int numOTs, CBitVector& choices, CBitVector& response)
+void OTclass::OTreceiveC(int bitlength, int numOTs, CBitVector& choices, CBitVector& response)
 {
 /*	response.Create(numOTs, bitlength);
 	OTclass::ObliviouslyReceive(choices, response, numOTs, bitlength, C_OT);*/
-	return TRUE;
+//	return TRUE;
 }

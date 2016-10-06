@@ -1,7 +1,7 @@
 xterm -hold -e "./OTExtnsion.out -1 3Party/AESout 3Party/aesP0 parties 43739841701238781571456410093f43 0" &
 
-xterm -e "./OTExtnsion.out 1 3Party/AESout 3Party/aesP1 parties 43739841701238781571456410093f43 0" &
+xterm -hold -e "./OTExtnsion.out 1 3Party/AESout 3Party/aesP1 parties 43739841701238781571456410093f43 0" &
 
-xterm -e "./OTExtnsion.out 2 3Party/AESout 3Party/aesP2 parties 43739841701238781571456410093f43 0" 
+xterm -hold -e "./OTExtnsion.out 2 3Party/AESout 3Party/aesP2 parties 43739841701238781571456410093f43 0" 
 
 echo "Finished"

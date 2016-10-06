@@ -43,13 +43,13 @@ class OTclass{
 private:
 	USHORT		m_nPort;// = 7766;
 	const char* m_nAddr;// = "localhost";
-/*	boost::asio::io_service m_ioService;
+	boost::asio::io_service m_ioService;
 	SocketPartyData m_spMe;
 	SocketPartyData m_spOther;
     shared_ptr<CommParty> m_cpChannel;
     OTExtensionBristolSender* m_otSender;
     OTExtensionBristolReciever* m_otReceiver;
-*/
+
 	// Network Communication
 //	vector<CSocket> m_vSockets;
 	int m_nPID; // thread id
@@ -102,14 +102,14 @@ public:
 	OTclass(char *address, int port, int mode,const char* seed);
 	~OTclass();//destructor
 	//initialization of OT
-	BOOL Initialize();
+	void Initialize();
 
-	//Oblivious communication
-	BOOL OTsend(int bitlength, int numOTs, CBitVector& X1, CBitVector& X2);
-	BOOL OTsendC(int bitlength, int numOTs, CBitVector& X1, CBitVector& X2, CBitVector delta);
-	BOOL OTreceive(int bitlength, int numOTs, CBitVector& choices, CBitVector& response);//CBitVector
-	BOOL OTreceiveC(int bitlength, int numOTs, CBitVector& choices, CBitVector& response);//CBitVector
-	
+    //Oblivious communication
+    void OTsend(int bitlength, int numOTs, CBitVector& X1, CBitVector& X2);
+    void OTsendC(int bitlength, int numOTs, CBitVector& X1, CBitVector& X2, CBitVector delta);
+    void OTreceive(int bitlength, int numOTs, CBitVector& choices, CBitVector& response);//CBitVector
+    void OTreceiveC(int bitlength, int numOTs, CBitVector& choices, CBitVector& response);//CBitVector
+
 };
 
 
