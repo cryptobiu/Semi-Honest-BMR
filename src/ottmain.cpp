@@ -3,7 +3,7 @@
  *
  *      Author: froike (Roi Inbar) and Aner Ben-Efraim
  * 	Encapsulation of OTExtension code by Thomas Schneider and Michael Zhonner
- * 
+ *
  */
 
 
@@ -31,13 +31,17 @@ OTclass::OTclass(char* address, int port, int mode)
 	m_bUseECC = true;
 	//The security parameter (163,233,283 for ECC or 1024, 2048, 3072 for FFC)
 	m_nSecParam = 283;
-	
+
 	m_nNumOTThreads = OTTHREADNUM;
 	m_vSockets.resize(m_nNumOTThreads);//m_nNumOTThreads
-	
+
 	m_nAddr = address;
 	m_nPort = port;
 	m_nPID = mode;*/
+	m_nAddr = address;
+	m_nPort = port;
+	m_nPID = mode;
+	boost::thread t(boost::bind(&boost::asio::io_service::run, &m_ioService));
 }
 OTclass::OTclass(char * address, int port, int mode, const char * seed)
 { /*
@@ -49,7 +53,7 @@ OTclass::OTclass(char * address, int port, int mode, const char * seed)
 	m_bUseECC = true;
 	//The security parameter (163,233,283 for ECC or 1024, 2048, 3072 for FFC)
 	m_nSecParam = 283;
-	
+
 	m_nNumOTThreads = OTTHREADNUM;
 	m_vSockets.resize(m_nNumOTThreads);//m_nNumOTThreads
 	*/
@@ -57,6 +61,7 @@ OTclass::OTclass(char * address, int port, int mode, const char * seed)
 	m_nPort = port;
 	m_nPID = mode;
 	m_nSeed = seed;
+	boost::thread t(boost::bind(&boost::asio::io_service::run, &m_ioService));
 }
 OTclass::~OTclass()
 {
@@ -156,7 +161,7 @@ BOOL OTclass::Listen(int initialSocketNum, int port)
 	for (int i = 0; i<m_nNumOTThreads; i++)//twice the actual number, due to double sockets for OT
 	{
 		CSocket sock;
-		
+
 		if (!m_vSockets[initialSocketNum].Accept(sock))
 		{
 			cerr << "Error in accept" << endl;
@@ -192,22 +197,35 @@ listen_failure:
 */
 void OTclass::InitOTSender()
 {
-    m_spMe = SocketPartyData(IpAdress::from_string("127.0.0.1"), COMPARE_FUNCTIONALITY_SERVER_PORT);
-    m_spOther = SocketPartyData(IpAdress::from_string(m_nAddr), COMPARE_FUNCTIONALITY_CLIENT_PORT);
+	cout<<"Sender info:"<<endl;
+
+	cout<<"My Port: "<< m_nPort<<endl;
+	cout<<"Other Port: "<< m_nPort+1<<endl;
+	std::cout << "Other IP:"<<m_nAddr << std::endl;
+    m_spMe = SocketPartyData(IpAdress::from_string("127.0.0.1"), m_nPort);
+    m_spOther = SocketPartyData(IpAdress::from_string(m_nAddr), m_nPort+1);
     m_cpChannel = make_shared<CommPartyTCPSynced>(m_ioService, m_spMe, m_spOther);
 
     m_cpChannel->join(500, 5000);
-    m_otSender = new OTExtensionBristolSender(m_nPort, true, m_cpChannel);
+	cout<<"fdjk"<<endl;
+    m_otSender = new OTExtensionBristolSender(m_nPort+2, true, m_cpChannel);
+	cout <<"TESTTT"<<endl;
 }
 
 void OTclass::InitOTReceiver()
 {
-    m_spMe = SocketPartyData(IpAdress::from_string("127.0.0.1"), COMPARE_FUNCTIONALITY_CLIENT_PORT);
-    m_spOther = SocketPartyData(IpAdress::from_string(m_nAddr), COMPARE_FUNCTIONALITY_SERVER_PORT);
+	cout<<"Receiver info: "<<endl;
+	cout<< "My port: " <<m_nPort+1<<endl;
+	cout<< "Other port: " <<m_nPort<<endl;
+	cout<< "other address: "<<m_nAddr<<endl;
+    m_spMe = SocketPartyData(IpAdress::from_string("127.0.0.1"), m_nPort+1);
+    m_spOther = SocketPartyData(IpAdress::from_string(m_nAddr), m_nPort);
     m_cpChannel = make_shared<CommPartyTCPSynced>(m_ioService, m_spMe, m_spOther);
 
     m_cpChannel->join(500, 5000);
-    m_otReceiver = new OTExtensionBristolReciever("127.0.0.1", m_nPort, true, m_cpChannel);
+	cout<<"fdjk"<<endl;
+    m_otReceiver = new OTExtensionBristolReciever(m_nAddr, m_nPort+2, true, m_cpChannel);
+	cout <<"TESTTT"<<endl;
 }
 /*
 BOOL OTclass::PrecomputeNaorPinkasSender()
@@ -216,7 +234,7 @@ BOOL OTclass::PrecomputeNaorPinkasSender()
 	int nSndVals = 2;
 	BYTE* pBuf = new BYTE[NUM_EXECS_NAOR_PINKAS * SHA1_BYTES];
 	int log_nVals = (int)ceil(log((double)nSndVals) / log(2.0)), cnt = 0;
-	
+
 	U.Create(NUM_EXECS_NAOR_PINKAS*log_nVals, m_aSeed, cnt);
 
 	bot->Receiver(nSndVals, NUM_EXECS_NAOR_PINKAS, U, m_vSockets[0], pBuf);
@@ -235,13 +253,13 @@ BOOL OTclass::PrecomputeNaorPinkasSender()
 BOOL OTclass::PrecomputeNaorPinkasReceiver()
 {
 	int nSndVals = 2;
-	
-	// Execute NP receiver routine and obtain the key 
+
+	// Execute NP receiver routine and obtain the key
 	BYTE* pBuf = new BYTE[SHA1_BYTES * NUM_EXECS_NAOR_PINKAS * nSndVals];
 
-	// N-P sender: send: C0 (=g^r), C1, C2, C3 
+	// N-P sender: send: C0 (=g^r), C1, C2, C3
 	bot->Sender(nSndVals, NUM_EXECS_NAOR_PINKAS, m_vSockets[0], pBuf);
-	
+
 	BYTE* pBufIdx = pBuf;
 	for (int i = 0; i<NUM_EXECS_NAOR_PINKAS * nSndVals; i++)
 	{

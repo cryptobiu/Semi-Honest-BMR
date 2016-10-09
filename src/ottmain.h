@@ -3,7 +3,7 @@
  *
  *      Author: froike (Roi Inbar) and Aner Ben-Efraim
  * 	Encapsulation of OTExtension code by Thomas Schneider and Michael Zhonner
- * 
+ *
  */
 
 
@@ -31,6 +31,7 @@
 #include <random>
 #include <stdint.h>
 #include "../../libscapi/include/interactive_mid_protocols/OTExtensionBristol.hpp"
+#include <boost/thread/thread.hpp>
 //#include <thread>
 #define OT_PORT 12001
 #define COMPARE_FUNCTIONALITY_SERVER_PORT 1212

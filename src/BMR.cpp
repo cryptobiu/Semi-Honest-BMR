@@ -1,15 +1,15 @@
 /*
  * 	BMR.cpp
- * 
- *      Author: Aner Ben-Efraim 
- * 	
+ *
+ *      Author: Aner Ben-Efraim
+ *
  * 	year: 2016
- * 
+ *
  */
 
 #include "BMR.h"
 #include <thread>
-#include <mutex> 
+#include <mutex>
 #include "secCompMultiParty.h"
 #include "ottmain.h"
 
@@ -145,7 +145,7 @@ void initializeCommunication(char* filename, Circuit* c, int p)
 	partyNum = p;
 	char buff[STRING_BUFFER_SIZE];
 	char ip[STRING_BUFFER_SIZE];
-	
+
 	addrs = new string[numOfParties];
 	int * ports = new int[numOfParties * 2];
 
@@ -155,13 +155,13 @@ void initializeCommunication(char* filename, Circuit* c, int p)
 		fgets(buff, STRING_BUFFER_SIZE, f);
 		sscanf(buff, "%s\n", ip);
 		addrs[i] = string(ip);
-		
+
 		ports[2 * i] = 8000 + i*numOfParties + partyNum;
 		ports[2 * i + 1] = 8000 + partyNum*numOfParties + i;
 	}
 
 	fclose(f);
-	//if (numOfParties>20) 
+	//if (numOfParties>20)
 	  initializeCommunicationSerial(ports);
 
 	delete[] ports;
@@ -232,15 +232,15 @@ void newInitializeOTs(int* ports)//Serial - use this method on unix
 }
 
 void initializeOTs()
-{	
+{
 	int * ports = new int[numOfParties * 2];
-	
+
 	for (int i = 0; i < numOfParties; i++)
 	{
-		ports[2 * i] = 22500+i*numOfParties+partyNum;
-		ports[2 * i + 1] = 22500 + partyNum*numOfParties + i;
-	}		
-		
+		ports[2 * i] = 3*(22500+i*numOfParties+partyNum);
+		ports[2 * i + 1] = 3*(22500 + partyNum*numOfParties + i);
+	}
+
 	//initializeOTs(ports);//Windows
 	newInitializeOTs(ports);//Unix
 	delete[] ports;
@@ -248,9 +248,9 @@ void initializeOTs()
 
 void newLoadRandom()
 {
-	
+
 	R = RAND;
-	
+
 	for (int p = 0; p < numOfParties; p++)
 	{
 		for (int i = 0; i < cyc->playerArray[p].playerBitAmount; i++)
@@ -373,7 +373,7 @@ void mulLambdas()
 	{
 		cyc->regularGates[g]->mulLambdas = cyc->regularGates[g]->input1->lambda & cyc->regularGates[g]->input2->lambda;
 	}
-	
+
 	//sum the random bits (which were used for masking)
 	//and
 	//sum the received lambdas (which are either random or lambda2+random)
@@ -381,7 +381,7 @@ void mulLambdas()
 	//multLambda[g]=lambdaIn1[g]*lambdaIn2[g]
 	for (int p = 0; p < numOfParties; p++)
 	{
-		
+
 		if (p != partyNum)
 		{
 			for (int g = 0; g < cyc->numOfANDGates; g++)
@@ -453,7 +453,7 @@ void mulLambdasC()
 	//and
 	//sum the received lambdas (which are either random or lambda2+random)
 	//so that
-	//multLambda[g]=lambdaIn1[g]*lambdaIn2[g] 
+	//multLambda[g]=lambdaIn1[g]*lambdaIn2[g]
 	for (int p = 0; p < numOfParties; p++)
 	{
 
@@ -468,7 +468,7 @@ void mulLambdasC()
 
 	Delta.delCBitVector();
 	choicesLambda.delCBitVector();
-	
+
 	delete[] threads;
 }
 
@@ -493,13 +493,13 @@ void receiveRC(int player, CBitVector choices)
 //Using correlated OT
 void mulRC()
 {
-	
+
 	CBitVector choices;//merging of choicesAg, choicesBg, choicesCg, and choicesDg
-	
+
 	//allocation of space for OT sending
 	X1Long = new CBitVector[numOfParties];
 	X2Long = new CBitVector[numOfParties];
-	
+
 	//Delta is just copies of R^i
 	CBitVector Delta;
 	Delta.Create(3 * cyc->numOfANDGates,128);
@@ -540,7 +540,7 @@ void mulRC()
 		}
 
 		cyc->regularGates[g]->G[3 ^ sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[3 ^ sh][partyNum], R);//XOR previous results and Xor R for Dg
-			
+
 	}
 
 	for (int p = 0; p < numOfParties; p++)
@@ -566,7 +566,7 @@ void mulRC()
 	for (int i = 0; i < 2 * numOfParties; i++)
 		if (i != 2 * partyNum && i != 2 * partyNum + 1)
 			threads[i].join();
-	
+
 	////build Ag,Bg,Cg,Dg for all gates
 	__m128i recR, recR2, recR3;
 	__m128i recX1, recX12, recX13;
@@ -608,7 +608,7 @@ void mulRC()
 
 	Delta.delCBitVector();
 	choices.delCBitVector();
-	
+
 	delete[] threads;
 }
 
@@ -622,7 +622,7 @@ void receiveR(int player, CBitVector choices)
 //not used (using correlated OT function instead)
 void sendR(int player)
 {
-	senders[player]->OTsend(128, 3 * cyc->numOfANDGates, X1Long[player], X2Long[player]);	
+	senders[player]->OTsend(128, 3 * cyc->numOfANDGates, X1Long[player], X2Long[player]);
 }
 
 //not used (using correlated OT function instead)
@@ -642,8 +642,8 @@ void mulR()
 		tmp = cyc->regularGates[g]->mulLambdas^cyc->regularGates[g]->output->lambda;
 		//Use shift to adjust to gate.
 		int sh = cyc->regularGates[g]->sh;
-		
-		
+
+
 		choices.Set(g * 3, tmp);//multLambda[g] ^ lambda[out[g]] for Ag
 		if (tmp)//local multiplication of R*(lambdaIn1*lambdaIn2+lambdaOut)
 		{
@@ -651,63 +651,63 @@ void mulR()
 			cyc->regularGates[g]->G[3^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][partyNum], R);
 		}
 		//cout << "Ag:"; print(cyc->regularGates[g]->G[0],numOfParties);
-		
+
 		choices.Set(g * 3 + 1, tmp^cyc->regularGates[g]->input1->lambda);//multLambda[g] ^ lambdas[in1[g]] ^ lambda[out[g]] for Bg [multLambda ^ lambdaIn1=lambdaIn1*(!lambdaIn2) ]
 		if (tmp^cyc->regularGates[g]->input1->lambda)
 		{
 			cyc->regularGates[g]->G[1^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[1^sh][partyNum], R);
 			cyc->regularGates[g]->G[3^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][partyNum], R);
 		}
-		
+
 		choices.Set(g * 3 + 2, tmp^cyc->regularGates[g]->input2->lambda);//multLambda[g] ^ lambdas[in2[g]] ^ lambda[out[g]] for Cg
 		if (tmp^cyc->regularGates[g]->input2->lambda)
 		{
 			cyc->regularGates[g]->G[2^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[2^sh][partyNum], R);
 			cyc->regularGates[g]->G[3^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][partyNum], R);
 		}
-		
+
 		cyc->regularGates[g]->G[3^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][partyNum], R);//XOR previous results and Xor R for Dg
-		
+
 	}
-		
+
 	for (int p = 0; p < numOfParties; p++)
 	{
 		if (p != partyNum)
 		{
 			X1Long[p].Create(3 * cyc->numOfANDGates, 128);//need a different random vector for each player (because they can collude)
-	
+
 			__m128i rand1, rand2, rand3;// rand4
 			X2Long[p].Create(cyc->numOfANDGates * 3, 128);
 			for (int g = 0; g < cyc->numOfANDGates; g++)
 			{
 				int sh = cyc->regularGates[g]->sh;
-				
+
 				rand1 = RAND; rand2 = RAND; rand3 = RAND;
-				X1Long[p].Set(3 * g, rand1); 
-				
+				X1Long[p].Set(3 * g, rand1);
+
 				cyc->regularGates[g]->G[0^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[0^sh][partyNum], rand1);
-				
-				X1Long[p].Set(3 * g + 1, rand2); 
+
+				X1Long[p].Set(3 * g + 1, rand2);
 				cyc->regularGates[g]->G[1^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[1^sh][partyNum], rand2);
-				
-				X1Long[p].Set(3 * g + 2, rand3); 
+
+				X1Long[p].Set(3 * g + 2, rand3);
 				cyc->regularGates[g]->G[2^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[2^sh][partyNum], rand3);
 
 				//Logic: R(-lambdaIn1)(-lambdaIn2)=R(lambdaIn1+1)(lambdaIn2+1)=R*lambdaIn1*lambdaIn2+R*lambdaIn1+R*lambdaIn2 (+R, which is done locally)
-				
+
 				cyc->regularGates[g]->G[3^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][partyNum], rand1);
 				cyc->regularGates[g]->G[3^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][partyNum], rand2);
 				cyc->regularGates[g]->G[3^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][partyNum], rand3);
-				
+
 				//every 128-bit element of X2Long is R XORed with the (random) element of X1Long
 				X2Long[p].Set(g * 3, _mm_xor_si128(R, rand1)); // X1^R
 				X2Long[p].Set(g * 3 + 1, _mm_xor_si128(R, rand2));
 				X2Long[p].Set(g * 3 + 2, _mm_xor_si128(R, rand3));
-				
+
 			}
 		}
 	}
-	
+
 	//Do the OT, using threads
 	thread	*threads = new thread[2 * numOfParties];
 	for (int i = 0; i < numOfParties; i++)
@@ -723,8 +723,8 @@ void mulR()
 		if (i != 2 * partyNum && i != 2 * partyNum + 1)
 			threads[i].join();
 
-		
-		
+
+
 	////build Ag,Bg,Cg,Dg for all gates
 	__m128i recR, recR2, recR3;
 	for (int p = 0; p < numOfParties; p++)
@@ -733,15 +733,15 @@ void mulR()
 		{
 			int sh = cyc->regularGates[g]->sh;
 			recR = OTLongs[p].GetBlock(3 * g);
-			
+
 			cyc->regularGates[g]->G[0^sh][p] = _mm_xor_si128(cyc->regularGates[g]->G[0^sh][p], recR);
 			recR2 = OTLongs[p].GetBlock(3 * g+1);
-			
+
 			cyc->regularGates[g]->G[1^sh][p] = _mm_xor_si128(cyc->regularGates[g]->G[1^sh][p], recR2);
 			recR3 = OTLongs[p].GetBlock(3 * g+2);
-			
+
 			cyc->regularGates[g]->G[2^sh][p] = _mm_xor_si128(cyc->regularGates[g]->G[2^sh][p], recR3);
-			
+
 			cyc->regularGates[g]->G[3^sh][p] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][p], recR);
 			cyc->regularGates[g]->G[3^sh][p] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][p], recR2);
 			cyc->regularGates[g]->G[3^sh][p] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][p], recR3);
@@ -757,10 +757,10 @@ void mulR()
 
 __m128i* XORsuperseeds(__m128i *superseed1, __m128i *superseed2)
 {
-	
+
 	void* test=_aligned_malloc(numOfParties*sizeof(__m128i), 16);
-	
-	__m128i* ans = static_cast<__m128i *> (test); 
+
+	__m128i* ans = static_cast<__m128i *> (test);
 	for (int p = 0; p < numOfParties; p++)
 	{
 		ans[p] = _mm_xor_si128(superseed1[p], superseed2[p]);
@@ -784,7 +784,7 @@ void computeGates()
 		bigMemoryAllocation = static_cast<__m128i *>(_aligned_malloc(4*cyc->numOfANDGates*numOfParties * sizeof(__m128i)+numOfOutputWires, 16));
 	else
 		bigMemoryAllocation = static_cast<__m128i *>(_aligned_malloc((4 * cyc->numOfANDGates*numOfParties+numOfOutputWires) * sizeof(__m128i), 16));
-	
+
 	__m128i seed1, seed2;
 	Gate* gate;
 	for (int g = 0; g < cyc->numOfANDGates; g++)//add the seeds to Ag, Bg, Cg, and Dg
@@ -802,8 +802,8 @@ void computeGates()
 		PSEUDO_RANDOM_FUNCTION(seed1, _mm_xor_si128(seed2, R), gate->gateNumber, numOfParties, gate->G[1]);//in1,in2^R
 		PSEUDO_RANDOM_FUNCTION(_mm_xor_si128(seed1, R), seed2, gate->gateNumber, numOfParties, gate->G[2]);//in1^R,in2
 		PSEUDO_RANDOM_FUNCTION(_mm_xor_si128(seed1, R), _mm_xor_si128(seed2, R), gate->gateNumber, numOfParties, gate->G[3]);//in1^r,in2^R
-		
-		
+
+
 		gate->G[0][partyNum] = _mm_xor_si128(gate->G[0][partyNum], gate->output->seed);
 		gate->G[1][partyNum] = _mm_xor_si128(gate->G[1][partyNum], gate->output->seed);
 		gate->G[2][partyNum] = _mm_xor_si128(gate->G[2][partyNum], gate->output->seed);
@@ -868,12 +868,12 @@ void exchangeGates()
 					cyc->regularGates[g]->G[3][p] = _mm_xor_si128(playerSeeds[party][(4 * g + 3)*numOfParties + p], cyc->regularGates[g]->G[3][p]);
 				}
 			}
-			
+
 			for (int o = 0; o < numOfOutputWires;o++)
 				cyc->outputWires.playerWires[o]->lambda ^= ((bool*) playerSeeds[party])[(sizeof(__m128i)/sizeof(bool))* 4 * cyc->numOfANDGates *numOfParties + o];
 		}
 	}
-	
+
 	//free memory
 	delete[] threads;
 	for (int p = 0; p < numOfParties; p++)
@@ -892,14 +892,14 @@ void sendInput(bool* inputs, int player)
 void receiveInputs(int player)
 {
 	bool* playerInputs = new bool[cyc->playerArray[player].playerBitAmount];
-	
+
 	communicationReceivers[player]->reciveMsg(playerInputs, cyc->playerArray[player].playerBitAmount);
-	
+
 	for (int i = 0; i < cyc->playerArray[player].playerBitAmount; i++)//store value in correct place
 	{
 		cyc->playerArray[player].playerWires[i]->value = playerInputs[i];
 	}
-	
+
 	delete[] playerInputs;//free memory
 }
 
@@ -922,8 +922,8 @@ void exchangeInputs()//send and receive inputs (XORed with lambda)
 			threads[i * 2 + 1] = thread(receiveInputs, i);//receive inputs from player i
 		}
 	}
-	
-	
+
+
 	for (int i = 0; i < 2 * numOfParties; i++)
 	{
 		if (i != 2 * partyNum && i != (2 * partyNum + 1))
@@ -945,7 +945,7 @@ void receiveSeed(int player)
 {
 	__m128i* playerSeeds = static_cast<__m128i *>(_aligned_malloc(numOfInputWires*sizeof(__m128i), 16));//allocate temporary memory to store response
 	communicationReceivers[player]->reciveMsg(playerSeeds, sizeof(__m128i)*numOfInputWires);//receive values from player
-	
+
 	int count = 0;
 	for (int p = 0; p < numOfParties; p++)
 	{
@@ -991,7 +991,7 @@ void exchangeSeeds()
 			threads[i].join();//wait for all threads to finish
 		}
 	}
-	
+
 
 	delete[] threads;
 	_aligned_free(toSend);//free memory
@@ -1014,7 +1014,7 @@ bool* computeOutputs()
 		}
 		else//Regular gate computation
 		{
-		  
+
 			valueIn1 = getValue(cyc->gateArray[g].input1, partyNum);
 			valueIn2 = getValue(cyc->gateArray[g].input2, partyNum);
 
@@ -1090,7 +1090,7 @@ void deleteAll()
 	}
 	else
 		deleteAllBGW();
-	
+
 	//close connection
 	for (int i = 0; i < numOfParties; i++)
 	{
