@@ -46,14 +46,20 @@ __m128i R;
 //Response vectors - stores the response from the OT.
 CBitVector *OTs;//for lambda multiplication
 CBitVector *OTLongs;//for R multiplication
+vector<byte> *OTsvec;
+vector<byte> *OTLongsvec;
 
 //Send vectors for lambdas
 CBitVector *X1;
 CBitVector *X2;
+vector<byte> *X1vec;
+vector<byte> *X2vec;
 
 //Send vectors for R
 CBitVector *X1Long;
 CBitVector *X2Long;
+vector<byte> *X1Longvec;
+vector<byte> *X2Longvec;
 
 //for exchanging data
 __m128i** playerSeeds;
@@ -291,106 +297,27 @@ void freeXorCompute()
 
 
 //functions for multiplying the lambdas
-
+//new OTs
+void sendLambdaCvec(int player, vector<byte> vecDelta)
+{
+	senders[player]->OTsendCvec(cyc->numOfANDGates,X1vec[player],X2vec[player],vecDelta);
+}
+void receiveLambdaCvec(int player, vector<byte> sigma)
+{
+	OTsvec[player].resize(16*cyc->numOfANDGates);
+	receivers[player]->OTreceiveCvec(cyc->numOfANDGates, sigma, OTsvec[player]);
+}
 //Using correlated OT
 void sendLambdaC(int player, CBitVector Delta)
 {
 	senders[player]->OTsendC(1, PAD(cyc->numOfANDGates, 8), X1[player], X2[player], Delta);
+	//senders[player]->OTsendCnew(cyc->numOfANDGates,X1vec[player],X2vec[player],newDelta);
 }
 //Using correlated OT
 void receiveLambdaC(int player, CBitVector choices)
 {
 	OTs[player].Create(PAD(cyc->numOfANDGates, 8), 1);
 	receivers[player]->OTreceiveC(1, PAD(cyc->numOfANDGates, 8), choices, OTs[player]);
-}
-//not used (using correlated OT function instead)
-void sendLambda(int player)
-{
-	senders[player]->OTsend(1, PAD(cyc->numOfANDGates,8), X1[player], X2[player]);
-}
-//not used (using correlated OT function instead)
-void receiveLambda(int player, CBitVector choices)
-{
-	OTs[player].Create(PAD(cyc->numOfANDGates, 8),1);
-	receivers[player]->OTreceive(1, PAD(cyc->numOfANDGates, 8), choices, OTs[player]);
-}
-
-//not used (using correlated OT function instead)
-void mulLambdas()
-{
-	thread* threads = new thread[2*numOfParties];
-	//initialize Choices vector and X2 vector according to lambdasIn2[g] and lambdasIn1[g] respectively (lambdas vector for easy XORing)
-	CBitVector choicesLambda;//The choices are lambdaIn2
-	choicesLambda.Create(PAD(cyc->numOfANDGates, 8), 1);
-
-	choicesLambda.Reset();
-	for (int g = 0; g < cyc->numOfANDGates; g++)
-	{
-		choicesLambda.Set(g, cyc->regularGates[g]->input2->lambda);//lambdasIn2[g]
-	}
-
-	X1 = new CBitVector[numOfParties];//A random vector
-	X2 = new CBitVector[numOfParties];//X1^lambdaIn1
-	bool r, l;
-	for (int p = 0; p < numOfParties; p++)
-	{
-		if (p != partyNum)
-		{
-			X1[p].Create(PAD(cyc->numOfANDGates, 8), 1);
-			X1[p].Reset();
-			//Create X2 and set the values
-			X2[p].Create(PAD(cyc->numOfANDGates, 8), 1);
-			X2[p].Reset();
-			for (int g = 0; g < cyc->numOfANDGates; g++)
-			{
-				r = RAND_BIT;
-
-				X1[p].Set(g, r);//X1 is random
-				//if player chooses 1 (i.e., lambdaIn2[g] of otherplayer=1) then give lambdaIn1[g] + the random element
-				l = cyc->regularGates[g]->input1->lambda;
-				X2[p].Set(g, r^l);
-			}
-		}
-	}
-
-	OTs = new CBitVector[numOfParties];//make room for incoming OTs
-	//Do the OT, using threads
-	for (int p = 0; p < numOfParties; p ++)
-	{
-		if (p != partyNum)
-		{
-			threads[2*p] = std::thread(sendLambda, p);
-			threads[2*p + 1] = std::thread(receiveLambda, p, choicesLambda);
-		}
-	}
-
-	//wait for all OT to finish
-	for (int i = 0; i < 2 * numOfParties; i++)
-		if (i != 2 * partyNum && i != 2 * partyNum + 1)
-				threads[i].join();
-
-	for (int g = 0; g < cyc->numOfANDGates; g++)
-	{
-		cyc->regularGates[g]->mulLambdas = cyc->regularGates[g]->input1->lambda & cyc->regularGates[g]->input2->lambda;
-	}
-
-	//sum the random bits (which were used for masking)
-	//and
-	//sum the received lambdas (which are either random or lambda2+random)
-	//so that
-	//multLambda[g]=lambdaIn1[g]*lambdaIn2[g]
-	for (int p = 0; p < numOfParties; p++)
-	{
-
-		if (p != partyNum)
-		{
-			for (int g = 0; g < cyc->numOfANDGates; g++)
-			{
-				cyc->regularGates[g]->mulLambdas ^= (X1[p].GetInt(g, 1) ^ OTs[p].GetInt(g, 1));
-			}
-		}
-	}
-	delete[] threads;
 }
 
 //Using correlated OT
@@ -399,25 +326,33 @@ void mulLambdasC()
 	thread* threads = new thread[2 * numOfParties];
 
 	CBitVector choicesLambda;//The choices are lambdaIn2
+	std::vector<byte> sigma;
 	choicesLambda.Create(PAD(cyc->numOfANDGates, 8), 1);
+	sigma.resize(cyc->numOfANDGates);
 
 	choicesLambda.Reset();
 	for (int g = 0; g < cyc->numOfANDGates; g++)
 	{
 		choicesLambda.Set(g, cyc->regularGates[g]->input2->lambda);//lambdasIn2[g]
+		sigma[g]=cyc->regularGates[g]->input2->lambda;
 	}
 
 	//X1^X2=lambdaIn1
 	X1 = new CBitVector[numOfParties];
 	X2 = new CBitVector[numOfParties];
+	X1vec= new vector<byte>[numOfParties];
+	X2vec= new vector<byte>[numOfParties];
 	//Delta for correlated OT - lambdaIn1
 	CBitVector Delta;
+	vector<byte> vecDelta;//=static_cast<__m128i *>(_aligned_malloc(cyc->numOfANDGates*sizeof(__m128i), 16));
 	Delta.Create(PAD(cyc->numOfANDGates, 8), 1);
-
+	vecDelta.resize(16*cyc->numOfANDGates);
 	for (int g = 0; g < cyc->numOfANDGates; g++)
 	{
 		Delta.Set(g, cyc->regularGates[g]->input1->lambda);
+		vecDelta[16*g]=cyc->regularGates[g]->input1->lambda;
 	}
+	//getchar();
 
 	for (int p = 0; p < numOfParties; p++)
 	{
@@ -425,17 +360,22 @@ void mulLambdasC()
 		{
 			X1[p].Create(PAD(cyc->numOfANDGates, 8), 1);
 			X2[p].Create(PAD(cyc->numOfANDGates, 8), 1);
+			X1vec[p].resize(16*cyc->numOfANDGates);
+			X2vec[p].resize(16*cyc->numOfANDGates);
 		}
 	}
 
 	OTs = new CBitVector[numOfParties];//make room for incoming OTs
+	OTsvec= new vector<byte>[numOfParties];//make room for incoming OTs
 	//Do the OT, using threads
 	for (int p = 0; p < numOfParties; p++)
 	{
 		if (p != partyNum)
 		{
-			threads[2 * p] = std::thread(sendLambdaC, p, Delta);
-			threads[2 * p + 1] = std::thread(receiveLambdaC, p, choicesLambda);
+			//threads[2 * p] = std::thread(sendLambdaC, p, Delta);
+			//threads[2 * p + 1] = std::thread(receiveLambdaC, p, choicesLambda);
+			threads[2 * p] = std::thread(sendLambdaCvec, p, vecDelta);
+			threads[2 * p + 1] = std::thread(receiveLambdaCvec, p, sigma);
 		}
 	}
 
@@ -443,7 +383,7 @@ void mulLambdasC()
 	for (int i = 0; i < 2 * numOfParties; i++)
 		if (i != 2 * partyNum && i != 2 * partyNum + 1)
 			threads[i].join();
-
+	//getchar();
 	for (int g = 0; g < cyc->numOfANDGates; g++)
 	{
 		cyc->regularGates[g]->mulLambdas = cyc->regularGates[g]->input1->lambda & cyc->regularGates[g]->input2->lambda;
@@ -461,7 +401,13 @@ void mulLambdasC()
 		{
 			for (int g = 0; g < cyc->numOfANDGates; g++)
 			{
-				cyc->regularGates[g]->mulLambdas ^= (X1[p].GetInt(g, 1) ^ OTs[p].GetInt(g, 1));//****unification of the 2 commands below
+				// cout<<"X1:"<<X1vec[p][16*g]<<endl;
+				// cout<<"res:"<<OTsvec[p][16*g]<<endl;
+				// cout<<"mulL"<<cyc->regularGates[g]->mulLambdas<<endl;
+				cyc->regularGates[g]->mulLambdas ^=((X1vec[p][16*g]%2)^(OTsvec[p][16*g]%2));
+				// cout<<"XOR result"<<cyc->regularGates[g]->mulLambdas<<endl;
+				// getchar();
+				//cyc->regularGates[g]->mulLambdas ^= (X1[p].GetInt(g, 1) ^ OTs[p].GetInt(g, 1));//****unification of the 2 commands below
 			}
 		}
 	}
@@ -476,6 +422,18 @@ void mulLambdasC()
 
 
 //Functions for multiplying R with (lambdaIn1*lambdaIn2+lambdaOut)
+//new OT Functions
+void sendRCvec(int player,vector<byte> vecDelta)
+{
+	senders[player]->OTsendCvec(3 * cyc->numOfANDGates, X1Longvec[player], X2Longvec[player], vecDelta);
+}
+
+void receiveRCvec(int player, vector<byte> sigma)
+{
+	OTLongsvec[player].resize(3 * cyc->numOfANDGates, 128);
+	receivers[player]->OTreceiveCvec(3 * cyc->numOfANDGates, sigma, OTLongsvec[player]);
+}
+
 
 //Using correlated OT
 void sendRC(int player,CBitVector Delta)
@@ -495,20 +453,32 @@ void mulRC()
 {
 
 	CBitVector choices;//merging of choicesAg, choicesBg, choicesCg, and choicesDg
+	vector<byte> sigma;
 
 	//allocation of space for OT sending
 	X1Long = new CBitVector[numOfParties];
 	X2Long = new CBitVector[numOfParties];
+	X1Longvec = new vector<byte>[numOfParties];
+	X2Longvec = new vector<byte>[numOfParties];
 
 	//Delta is just copies of R^i
 	CBitVector Delta;
 	Delta.Create(3 * cyc->numOfANDGates,128);
 	for (int g = 0; g < 3*cyc->numOfANDGates; g++)
 		Delta.Set(g, R);
+	///*******************************
+	vector<byte> vecDelta;
+	vecDelta.resize(16 * (3 * cyc->numOfANDGates));
+	__m128i* Rvec=(__m128i*)vecDelta.data();
+	for (int g=0;g<3*cyc->numOfANDGates; g++)
+		Rvec[g]=R;
+	///*******************************
 
 	OTLongs = new CBitVector[numOfParties];//make room for incoming OTs
+	OTLongsvec = new vector<byte>[numOfParties];
 
 	choices.Create(3 * cyc->numOfANDGates);
+	sigma.resize(3 * cyc->numOfANDGates);
 	bool tmp;
 	for (int g = 0; g < cyc->numOfANDGates; g++)//initialize the vector(s)
 	{
@@ -517,7 +487,7 @@ void mulRC()
 																							//Use shift to adjust to gate.
 		int sh = cyc->regularGates[g]->sh;
 
-
+		sigma[g*3]=tmp;
 		choices.Set(g * 3, tmp);//multLambda[g] ^ lambda[out[g]] for Ag
 		if (tmp)//local multiplication of R*(lambdaIn1*lambdaIn2+lambdaOut)
 		{
@@ -525,6 +495,7 @@ void mulRC()
 			cyc->regularGates[g]->G[3 ^ sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[3 ^ sh][partyNum], R);
 		}
 
+		sigma[g*3+1]=tmp^cyc->regularGates[g]->input1->lambda;
 		choices.Set(g * 3 + 1, tmp^cyc->regularGates[g]->input1->lambda);//multLambda[g] ^ lambdas[in1[g]] ^ lambda[out[g]] for Bg [multLambda ^ lambdaIn1=lambdaIn1*(!lambdaIn2) ]
 		if (tmp^cyc->regularGates[g]->input1->lambda)
 		{
@@ -532,6 +503,7 @@ void mulRC()
 			cyc->regularGates[g]->G[3 ^ sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[3 ^ sh][partyNum], R);
 		}
 
+		sigma[g*3+2]=tmp^cyc->regularGates[g]->input2->lambda;
 		choices.Set(g * 3 + 2, tmp^cyc->regularGates[g]->input2->lambda);//multLambda[g] ^ lambdas[in2[g]] ^ lambda[out[g]] for Cg
 		if (tmp^cyc->regularGates[g]->input2->lambda)
 		{
@@ -549,6 +521,8 @@ void mulRC()
 		{
 			X1Long[p].Create(3 * cyc->numOfANDGates, 128);//need a different random vector for each player (because they can collude)
 			X2Long[p].Create(3 * cyc->numOfANDGates, 128);
+			X1Longvec[p].resize(16*3 * cyc->numOfANDGates);
+			X2Longvec[p].resize(16*3 * cyc->numOfANDGates);
 		}
 	}
 	//Do the OT, using threads
@@ -558,8 +532,10 @@ void mulRC()
 	{
 		if (i != partyNum)
 		{
-			threads[i * 2] = thread(sendRC, i, Delta);//sending using Correlated OT
-			threads[i * 2 + 1] = thread(receiveRC, i, choices);
+			//threads[i * 2] = thread(sendRC, i, Delta);//sending using Correlated OT
+			//threads[i * 2 + 1] = thread(receiveRC, i, choices);
+			threads[i * 2] = thread(sendRCvec, i, vecDelta);//sending using Correlated OT
+			threads[i * 2 + 1] = thread(receiveRCvec, i, sigma);
 		}
 	}
 	//wait for all OT threads to finish
@@ -572,8 +548,11 @@ void mulRC()
 	__m128i recX1, recX12, recX13;
 	for (int p = 0; p < numOfParties; p++)
 	{
-		__m128i * otResult = (__m128i*) OTLongs[p].GetArr();
-		__m128i * otx1 = (__m128i*) X1Long[p].GetArr();
+		//__m128i * otResult = (__m128i*) OTLongs[p].GetArr();////************************
+		//__m128i * otx1 = (__m128i*) X1Long[p].GetArr();
+		__m128i * otResult = (__m128i*) OTLongsvec[p].data();
+		__m128i * otx1 = (__m128i*) X1Longvec[p].data();
+
 		if (p != partyNum)	for (int g = 0; g < cyc->numOfANDGates; g++)
 		{
 			int sh = cyc->regularGates[g]->sh;
@@ -612,143 +591,6 @@ void mulRC()
 	delete[] threads;
 }
 
-//not used (using correlated OT function instead)
-void receiveR(int player, CBitVector choices)
-{
-	OTLongs[player].Create(3*cyc->numOfANDGates,128);
-	receivers[player]->OTreceive(128, 3 * cyc->numOfANDGates, choices, OTLongs[player]);
-}
-
-//not used (using correlated OT function instead)
-void sendR(int player)
-{
-	senders[player]->OTsend(128, 3 * cyc->numOfANDGates, X1Long[player], X2Long[player]);
-}
-
-//not used (using correlated OT function instead)
-void mulR()
-{
-	CBitVector choices;
-
-	X1Long = new CBitVector[numOfParties];
-	X2Long = new CBitVector[numOfParties];
-	OTLongs = new CBitVector[numOfParties];//make room for incoming OTs
-
-	choices.Create(3*cyc->numOfANDGates);
-	bool tmp;
-	for (int g = 0; g < cyc->numOfANDGates; g++)//initialize the vector(s)
-	{
-
-		tmp = cyc->regularGates[g]->mulLambdas^cyc->regularGates[g]->output->lambda;
-		//Use shift to adjust to gate.
-		int sh = cyc->regularGates[g]->sh;
-
-
-		choices.Set(g * 3, tmp);//multLambda[g] ^ lambda[out[g]] for Ag
-		if (tmp)//local multiplication of R*(lambdaIn1*lambdaIn2+lambdaOut)
-		{
-			cyc->regularGates[g]->G[0^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[0^sh][partyNum], R);
-			cyc->regularGates[g]->G[3^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][partyNum], R);
-		}
-		//cout << "Ag:"; print(cyc->regularGates[g]->G[0],numOfParties);
-
-		choices.Set(g * 3 + 1, tmp^cyc->regularGates[g]->input1->lambda);//multLambda[g] ^ lambdas[in1[g]] ^ lambda[out[g]] for Bg [multLambda ^ lambdaIn1=lambdaIn1*(!lambdaIn2) ]
-		if (tmp^cyc->regularGates[g]->input1->lambda)
-		{
-			cyc->regularGates[g]->G[1^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[1^sh][partyNum], R);
-			cyc->regularGates[g]->G[3^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][partyNum], R);
-		}
-
-		choices.Set(g * 3 + 2, tmp^cyc->regularGates[g]->input2->lambda);//multLambda[g] ^ lambdas[in2[g]] ^ lambda[out[g]] for Cg
-		if (tmp^cyc->regularGates[g]->input2->lambda)
-		{
-			cyc->regularGates[g]->G[2^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[2^sh][partyNum], R);
-			cyc->regularGates[g]->G[3^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][partyNum], R);
-		}
-
-		cyc->regularGates[g]->G[3^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][partyNum], R);//XOR previous results and Xor R for Dg
-
-	}
-
-	for (int p = 0; p < numOfParties; p++)
-	{
-		if (p != partyNum)
-		{
-			X1Long[p].Create(3 * cyc->numOfANDGates, 128);//need a different random vector for each player (because they can collude)
-
-			__m128i rand1, rand2, rand3;// rand4
-			X2Long[p].Create(cyc->numOfANDGates * 3, 128);
-			for (int g = 0; g < cyc->numOfANDGates; g++)
-			{
-				int sh = cyc->regularGates[g]->sh;
-
-				rand1 = RAND; rand2 = RAND; rand3 = RAND;
-				X1Long[p].Set(3 * g, rand1);
-
-				cyc->regularGates[g]->G[0^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[0^sh][partyNum], rand1);
-
-				X1Long[p].Set(3 * g + 1, rand2);
-				cyc->regularGates[g]->G[1^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[1^sh][partyNum], rand2);
-
-				X1Long[p].Set(3 * g + 2, rand3);
-				cyc->regularGates[g]->G[2^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[2^sh][partyNum], rand3);
-
-				//Logic: R(-lambdaIn1)(-lambdaIn2)=R(lambdaIn1+1)(lambdaIn2+1)=R*lambdaIn1*lambdaIn2+R*lambdaIn1+R*lambdaIn2 (+R, which is done locally)
-
-				cyc->regularGates[g]->G[3^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][partyNum], rand1);
-				cyc->regularGates[g]->G[3^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][partyNum], rand2);
-				cyc->regularGates[g]->G[3^sh][partyNum] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][partyNum], rand3);
-
-				//every 128-bit element of X2Long is R XORed with the (random) element of X1Long
-				X2Long[p].Set(g * 3, _mm_xor_si128(R, rand1)); // X1^R
-				X2Long[p].Set(g * 3 + 1, _mm_xor_si128(R, rand2));
-				X2Long[p].Set(g * 3 + 2, _mm_xor_si128(R, rand3));
-
-			}
-		}
-	}
-
-	//Do the OT, using threads
-	thread	*threads = new thread[2 * numOfParties];
-	for (int i = 0; i < numOfParties; i++)
-	{
-		if (i != partyNum)
-		{
-			threads[i * 2] = thread(sendR, i);
-			threads[i * 2 + 1] = thread(receiveR, i, choices);
-		}
-	}
-	//wait for all OT to finish
-	for (int i = 0; i < 2 * numOfParties; i++)
-		if (i != 2 * partyNum && i != 2 * partyNum + 1)
-			threads[i].join();
-
-
-
-	////build Ag,Bg,Cg,Dg for all gates
-	__m128i recR, recR2, recR3;
-	for (int p = 0; p < numOfParties; p++)
-	{
-		if (p!=partyNum)	for (int g = 0; g < cyc->numOfANDGates; g++)
-		{
-			int sh = cyc->regularGates[g]->sh;
-			recR = OTLongs[p].GetBlock(3 * g);
-
-			cyc->regularGates[g]->G[0^sh][p] = _mm_xor_si128(cyc->regularGates[g]->G[0^sh][p], recR);
-			recR2 = OTLongs[p].GetBlock(3 * g+1);
-
-			cyc->regularGates[g]->G[1^sh][p] = _mm_xor_si128(cyc->regularGates[g]->G[1^sh][p], recR2);
-			recR3 = OTLongs[p].GetBlock(3 * g+2);
-
-			cyc->regularGates[g]->G[2^sh][p] = _mm_xor_si128(cyc->regularGates[g]->G[2^sh][p], recR3);
-
-			cyc->regularGates[g]->G[3^sh][p] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][p], recR);
-			cyc->regularGates[g]->G[3^sh][p] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][p], recR2);
-			cyc->regularGates[g]->G[3^sh][p] = _mm_xor_si128(cyc->regularGates[g]->G[3^sh][p], recR3);
-		}
-	}
-	delete[] threads;
-}
 
 
 

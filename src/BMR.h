@@ -1,10 +1,10 @@
 /*
  * 	BMR.h
- * 
- *      Author: Aner Ben-Efraim 
- * 	
+ *
+ *      Author: Aner Ben-Efraim
+ *
  * 	year: 2016
- * 
+ *
  */
 
 #ifndef _BMR_H_
@@ -47,20 +47,13 @@ void XORsuperseedsNew(__m128i *superseed1, __m128i *superseed2, __m128i *out);
 
 void computeGates();
 
-//obsolete
-void sendLambda(int player);
-void receiveLambda(int player, CBitVector choices);
-void mulLambdas();
+
 //replaced by
 void sendLambdaC(int player, CBitVector Delta);
 void receiveLambdaC(int player, CBitVector choices);
 void mulLambdasC();
 
-//obsolete
-void sendR(int player);
-void receiveR(int player, CBitVector choices);
-void mulRAssist(int player, CBitVector choices);
-void mulR();
+
 //replaced by
 void sendRC(int player, CBitVector Delta);
 void receiveRC(int player, CBitVector choices);

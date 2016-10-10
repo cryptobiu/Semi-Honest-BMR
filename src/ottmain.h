@@ -108,8 +108,10 @@ public:
     //Oblivious communication
     void OTsend(int bitlength, int numOTs, CBitVector& X1, CBitVector& X2);
     void OTsendC(int bitlength, int numOTs, CBitVector& X1, CBitVector& X2, CBitVector delta);
+	void OTsendCvec(int numOTs, vector<byte>& X1, vector<byte>& X2, vector<byte> delta);
     void OTreceive(int bitlength, int numOTs, CBitVector& choices, CBitVector& response);//CBitVector
     void OTreceiveC(int bitlength, int numOTs, CBitVector& choices, CBitVector& response);//CBitVector
+	void OTreceiveCvec(int numOTs, vector<byte>& choices, vector<byte>& response);//CBitVector
 
 };
 

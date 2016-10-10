@@ -327,6 +327,81 @@ void OTclass::OTsendC(int bitlength, int numOTs, CBitVector& X1, CBitVector& X2,
 {
 	//return true;//OTclass::ObliviouslySend(X1, X2, numOTs, bitlength, C_OT, delta);
 }
+void OTclass::OTsendCvec(int numOTs, vector<byte>& X1, vector<byte>& X2, vector<byte> delta)
+{
+	OTBatchSInput * input = new OTExtensionCorrelatedSInput(delta, numOTs);
+    auto output = m_otSender->transfer(input);
+	X1= ((OTExtensionCorrelatedSOutput *)output.get())->getx0Arr();
+	X2= ((OTExtensionCorrelatedSOutput *)output.get())->getx1Arr();
+	// vector<byte> outputbytes = ((OTExtensionCorrelatedSOutput *)output.get())->getx0Arr();
+	//
+	// 	   cout<<"the size is :" <<outputbytes.size() <<" x0Arr " <<endl;
+	// 	   for(int i=0; i<16*numOTs; i++){
+	//
+	// 		   if ((i%16)==0){
+	// 							   cout<<endl;
+	// 						   }
+	// 		   cout<< (int)outputbytes[i]<<"--";
+	//
+	//
+	// 	   }
+	// 	   outputbytes = ((OTExtensionCorrelatedSOutput *)output.get())->getx1Arr();
+	//
+	// 	  cout<<"\n" <<"the size is :" <<outputbytes.size() <<" x1Arr " <<endl;
+	// 	  for(int i=0; i<16*numOTs; i++){
+	//
+	// 		  if (i%16==0){
+	// 							   cout<<endl;
+	// 						  }
+	// 		  cout<< (int)outputbytes[i]<<"--";
+	//
+	//
+	// 	  }
+}
+void OTclass::OTreceiveCvec(int numOTs, vector<byte>& choices, vector<byte>& response)
+{
+	// cout<<"before"<<endl;
+	// for(int i=0; i<100; i++){
+	//
+	// 	if (i%16==0){
+	// 						cout<<endl;
+	// 						cout<<"choice: "<<(int) choices[i/16];
+	// 					}
+	//
+	//
+	// }
+	int elementSize = 128;
+	OTBatchRInput * input = new OTExtensionCorrelatedRInput(choices, elementSize);
+	auto output = m_otReceiver->transfer(input);
+	response = ((OTOnByteArrayROutput *)output.get())->getXSigma();
+	// cout<<"-------------------------------------------------------"<<endl;
+	// cout<<"after"<<endl;
+	// for(int i=0; i<100; i++){
+	//
+	// 	if (i%16==0){
+	// 						cout<<endl;
+	// 						cout<<"choice: "<<(int) choices[i/16];
+	// 					}
+	//
+	//
+	// }
+
+
+	// vector<byte> outputbytes = ((OTOnByteArrayROutput *)output.get())->getXSigma();
+	//
+    //         cout<<"the size is :" <<outputbytes.size()<<endl;
+    //         for(int i=0; i<16*numOTs; i++){
+	//
+    //             if (i%16==0){
+    //                                 cout<<endl;
+	// 								cout<<"choice: "<<(int) choices[i/16] <<", response:";
+    //                             }
+    //             cout<< (int)outputbytes[i]<<"--";
+	//
+    //         }
+	//
+    //         cout<<endl;
+}
 
 void OTclass::OTreceive(int bitlength, int numOTs, CBitVector& choices, CBitVector& response)
 {
