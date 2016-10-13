@@ -207,9 +207,9 @@ void OTclass::InitOTSender()
     m_cpChannel = make_shared<CommPartyTCPSynced>(m_ioService, m_spMe, m_spOther);
 
     m_cpChannel->join(500, 5000);
-	cout<<"fdjk"<<endl;
+	// cout<<"fdjk"<<endl;
     m_otSender = new OTExtensionBristolSender(m_nPort+2, true, m_cpChannel);
-	cout <<"TESTTT"<<endl;
+	// cout <<"TESTTT"<<endl;
 }
 
 void OTclass::InitOTReceiver()
@@ -223,9 +223,9 @@ void OTclass::InitOTReceiver()
     m_cpChannel = make_shared<CommPartyTCPSynced>(m_ioService, m_spMe, m_spOther);
 
     m_cpChannel->join(500, 5000);
-	cout<<"fdjk"<<endl;
+	// cout<<"fdjk"<<endl;
     m_otReceiver = new OTExtensionBristolReciever(m_nAddr, m_nPort+2, true, m_cpChannel);
-	cout <<"TESTTT"<<endl;
+	// cout <<"TESTTT"<<endl;
 }
 /*
 BOOL OTclass::PrecomputeNaorPinkasSender()

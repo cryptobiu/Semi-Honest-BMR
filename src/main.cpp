@@ -30,9 +30,9 @@ bool *out;
 
 {
 	//Start initialization phase
-	
+
 	p = atoi(argv[1]);//Use this to get player number from arguments (use for local run).
-	
+
 	if (p < 0)
 	{
 		p = getPartyNum(argv[4]);//Use this to get player number by matching IP address
@@ -42,7 +42,7 @@ bool *out;
 	cout << "This is player:" << p << endl;
 
 
-	
+
 #ifdef PRINT_STEPS
 	cout << "Reading circuit from file" << endl;
 #endif
@@ -73,12 +73,12 @@ bool *out;
 	cout << endl<<"User given key "<< argv[5] << endl;
 #endif
 
-	initializeRandomness(argv[5], c->amountOfPlayers); 
-	
+	initializeRandomness(argv[5], c->amountOfPlayers);
+
 	//check adversary model
 	hm = 0;
 	if (argc > 6) hm = atoi(argv[6]);
-	
+
 	VERSION(hm);
 
 
@@ -110,7 +110,7 @@ bool *out;
 		cout << "BGW coef initialized" << endl;
 #endif
 	}
-	
+
 }
 //End setup phase
 
@@ -121,7 +121,7 @@ bool *out;
 
 	synchronize();
 	//Start offline phase
-
+	auto start = scapi_now();
 
 #ifdef PRINT_STEPS
 	cout << "Choosing Seeds and lambdas" << endl;
@@ -132,7 +132,7 @@ bool *out;
 
 #ifdef PRINT_STEPS
 	cout << "Seeds and lambdas chosen" << endl;
-	
+
 	//cout << "Ready to Roll" << endl;
 
 	cout << "Computing AES for gates" << endl;
@@ -177,7 +177,7 @@ bool *out;
 #ifdef PRINT_STEPS
 	cout << "Exchanged gates" << endl;
 #endif
-	  
+
 	}
 	else//Run BGW based protocol
 	{
@@ -207,7 +207,7 @@ bool *out;
 
 	//6.2 - reduce degree of share polynomials (not needed if >2/3 honest)
 	reduceDegBGW();
-				
+
 #ifdef PRINT_STEPS
 	cout << "Reduced Degree" << endl;
 #endif
@@ -231,11 +231,13 @@ bool *out;
 	//8 - send and receive gates
 	exchangeGatesBGW();//communication round, also exchanges the output lambdas, and reconstructs the gates
 	}
-	
+
+	print_elapsed_ms(start, "Offline time: ");
+
 	//end offline phase
 
 	{//Start of online phase
-	synchronize();
+	// synchronize();
 
 	//2 - load inputs from file
 	loadInputs(argv[3], cyc, p);
@@ -267,7 +269,9 @@ bool *out;
 #ifdef PRINT_STEPS
 		cout << "Outputs computed" << endl;
 #endif
-	
+
+
+ 	print_elapsed_ms(start, "Total time: ");
 
 	cout << "Outputs:" << endl;
 
@@ -276,14 +280,14 @@ bool *out;
 		cout << out[i];
 	}
 
-	
-	
+
+
 	//if (repetition < TEST_ROUNDS - 1)
 	  //delete[] out;
 	}
-	
+
 	deletePartial();
 }//end for loop
 	//deleteAll();
-	return 0;	
+	return 0;
 }
