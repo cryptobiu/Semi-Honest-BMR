@@ -1,2 +1,2 @@
-g++ -O3 -w -o OTExtnsion.out -pthread OTExtnsion/*.cpp util/*.cpp ot/*.cpp  -I 'util/Miracl/' -I 'util/' -std=c++11 -pthread -L./ -lmiracl -msse4.1 -pthread -maes -msse2 -mpclmul -fpermissive -fpic
+g++ -O3 -w -o BMRPassive.out -pthread OTExtnsion/*.cpp util/*.cpp ot/*.cpp  -I 'util/Miracl/' -I 'util/' -std=c++11 -pthread -L./ -lmiracl -msse4.1 -pthread -maes -msse2 -mpclmul -fpermissive -fpic
 
