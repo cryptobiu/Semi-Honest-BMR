@@ -1,16 +1,14 @@
 /********************************************************************/
-/* Copyright(c) 2015, Intel Corp.                                   */
-/* Developers and authors: Shay Gueron (1) (2)                      */
+/* Copyright(c) 2015.                                               */
+/* Shay Gueron (1) (2)                                              */
 /* (1) University of Haifa, Israel                                  */
 /* (2) Intel, Israel                                                */
-/* IPG, Architecture, Israel Development Center, Haifa, Israel   
-/* 
-/* 
-/* This file is part of the SCAPI project, is was taken from a file written by Shay Gueron.
-/* Some changes and additions have been made and only part of the file written by Shay Gueron has been copied 
-/* only for the use of this project.
-/*
+/*                                                                  */
+/* This code is part of the SCAPI project. It was taken from code   */
+/* written by Shay Gueron.                                          */
+/*                                                                  */
 /********************************************************************/
+/*NOTE: several changes have been made to the file by Shay Gueron   */
 
 #include "main_gf_funcs.h"
 
