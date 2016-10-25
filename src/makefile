@@ -11,7 +11,7 @@ LIBS =   -L../../libscapi/install/lib -L../../boost_1_60_0/stage/lib
 
 LINKER_OPTIONS = ../../libscapi/scapi.a ../../libscapi/install/lib/libmiracl.a ../../libscapi/install/lib/libOTExtensionBristol.a ../../libscapi/install/lib/libsimpleot.a $(LIBS) -lpthread -lgmp -lcrypto -lssl -lboost_system -lntl -lboost_thread -lOTExtension -lMaliciousOTExtension -lOTExtensionBristol -ldl -lmiracl
 
-all: dir $(OBJ_FILES) OTExtnsion.out
+all: dir $(OBJ_FILES) BMRPassive.out
 
 dir: 
 	mkdir -p obj/
@@ -19,7 +19,7 @@ dir:
 obj/%.o: %.cpp
 	$(CXX) -c $(CPP_OPTIONS) $(LINKER_OPTIONS) -o $@ $<
 
-OTExtnsion.out: $(OBJ_FILES)
+BMRPassive.out: $(OBJ_FILES)
 	$(CXX) $(OBJ_FILES) $(LINKER_OPTIONS) -o ../$@
 
 clean:
