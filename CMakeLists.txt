@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(SemiHonestBMR)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3 -msse4.1 -mavx -pthread -maes -msse2 -mpclmul -fpermissive -fpic" )
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3 -msse4.1 -mavx -pthread -maes -msse2 -mpclmul -fpermissive -fpic -flto" )
 
 SET (BOOST_ROOT $ENV{HOME}/boost_1_64_0/)
 SET (BOOST_INCLUDEDIR $ENV{HOME}/boost_1_64_0/)

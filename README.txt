@@ -6,13 +6,13 @@ COMPILATION
 
 In the master branch, compilation is done by the command "bash build"
 
-In the experimentation branch, compilation is done using the makefile ("make").
+In the experimentation branch, compilation is done using the cmake file ("cmake ." and then "make").
 
 RUNNING
 
 Running is done by executing
 
-"BMRPassive.out <Partynum> <CircuitFile> <InputsFile> <IPFile> <Key> <Version Number>"
+"BMRPassive -partyID <Partynum> -circuitFile <CircuitFile> -inputsFile <InputsFile> -partiesFile <IPFile> -key <Key> -version <Version Number>"
 
 Partynum is the party number. This number should also match the location of the party's IP in the IP file. For non-local execution, it is possible to use "-1" and the party number is taken as the location in the IP file.
 
