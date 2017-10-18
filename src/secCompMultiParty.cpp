@@ -57,7 +57,7 @@ bool LoadBool()
 	return ans;
 }
 
-void initializeRandomness(char* key, int numOfParties)
+void initializeRandomness(const char* key, int numOfParties)
 {
 #ifdef FIXED_KEY_AES
 	AES_set_encrypt_key((unsigned char*)FIXED_KEY_AES, 128, &fixed_aes_key);
@@ -67,7 +67,7 @@ void initializeRandomness(char* key, int numOfParties)
 	AES_init(numOfParties);
 
 
-	AES_set_encrypt_key((unsigned char*)key, 256, &aes_key);
+	AES_set_encrypt_key((const unsigned char*)key, 256, &aes_key);
 
 	rCounter = -1;
 }
@@ -140,7 +140,7 @@ bool getTrueValue(Wire *wire, int player)
 }
 
 //load the inputs
-void loadInputs(char* filename, Circuit *cyc, int partyNum)
+void loadInputs(const char* filename, Circuit *cyc, int partyNum)
 {
 	char ch;
 	int count = 0;
@@ -243,7 +243,7 @@ TruthTable createTruthTablefFromChars(char FF, char FT, char TF, char TT){
 	return TrueT;
 }
 
-Circuit * readCircuitFromFile(char * path)
+Circuit * readCircuitFromFile(const char * path)
 {
 	unsigned int gateAmount = 0;
 	unsigned int playerAmount = 0;

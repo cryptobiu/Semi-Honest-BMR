@@ -49,7 +49,7 @@ private:
 	SocketPartyData m_spOther;
     shared_ptr<CommParty> m_cpChannel;
     OTExtensionBristolSender* m_otSender;
-    OTExtensionBristolReciever* m_otReceiver;
+    OTExtensionBristolReceiver* m_otReceiver;
 
 	// Network Communication
 //	vector<CSocket> m_vSockets;

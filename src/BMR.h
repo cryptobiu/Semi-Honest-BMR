@@ -25,12 +25,12 @@ using namespace std;
 #define PAD(a,padTo)		a+(padTo-a%padTo)//a//
 
 
-Circuit* loadCircuit(char* filename);
+Circuit* loadCircuit(const char* filename);
 void loadInputs(char* filename);
 //
 void initCommunication(string addr, int port, int player, int mode);
 void initializeCommunication(int* ports);
-void initializeCommunication(char* filename, Circuit* c, int p);
+void initializeCommunication(const char* filename, Circuit* c, int p);
 //
 void initializeOT(string addr, int port, int player, int mode);
 void initializeOTs(int* ports);

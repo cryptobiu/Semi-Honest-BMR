@@ -1,7 +1,0 @@
-xterm -hold -e "./BMRPassive.out -1 3Party/AESout 3Party/aesP0 parties 43739841701238781571456410093f43 1" &
-
-xterm -e "./BMRPassive.out 1 3Party/AESout 3Party/aesP1 parties 43739841701238781571456410093f43 1" &
-
-xterm -e "./BMRPassive.out 2 3Party/AESout 3Party/aesP2 parties 43739841701238781571456410093f43 1" 
-
-echo "Finished"

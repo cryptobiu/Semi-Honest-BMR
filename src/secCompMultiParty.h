@@ -27,7 +27,7 @@ extern Wire *zeroWire, *oneWire;
 //returns a (pseudo)random 128bit number using AES-NI
 __m128i LoadSeedNew();
 //initialize randomness from user key using AES-NI
-void initializeRandomness(char* key, int numOfParties);
+void initializeRandomness(const char* key, int numOfParties);
 //returns a (pseudo)random bit using AES-NI, by sampling a bit;
 bool LoadBool();
 
@@ -53,7 +53,7 @@ bool getTrueValue(Wire *wire, int player);
 
 
 //load the inputs
-void loadInputs(char* filename,Circuit * cyc, int partyNum);
+void loadInputs(const char* filename,Circuit * cyc, int partyNum);
 
 /*
  * This function gets a path to a file that represents a circuit (format instructions below).
@@ -61,7 +61,7 @@ void loadInputs(char* filename,Circuit * cyc, int partyNum);
  * Returns a Circuit struct.
  *
  */
-Circuit * readCircuitFromFile(char path[]);
+Circuit * readCircuitFromFile(const char path[]);
 
 /*
  * private function that creates gate structs, used in readCircuitFromFile function.

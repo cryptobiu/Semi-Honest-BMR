@@ -1,7 +1,0 @@
-xterm -hold -e "./BMRPassive.out 0 3Party/SHA256 3Party/SHA256P0 parties 43739841701238781571456410093f43 2" &
-
-xterm -e "./BMRPassive.out 1 3Party/SHA256 3Party/SHA256P1 parties 43739841701238781571456410093f43 2" &
-
-xterm -e "./BMRPassive.out 2 3Party/SHA256 3Party/SHA256P2 parties 43739841701238781571456410093f43 2" 
-
-echo "Finished"

@@ -69,7 +69,7 @@ __m128i* bigMemoryAllocation;
 
 
 //load the circuit
-Circuit* loadCircuit(char* filename)
+Circuit* loadCircuit(const char* filename)
 {
 	cyc = readCircuitFromFile(filename);
 	numOfParties = cyc->amountOfPlayers;
@@ -144,7 +144,7 @@ void initializeCommunicationSerial(int* ports)//Use this for many parties
 }
 
 
-void initializeCommunication(char* filename, Circuit* c, int p)
+void initializeCommunication(const char* filename, Circuit* c, int p)
 {
 	cyc = c;
 	FILE * f = fopen(filename, "r");

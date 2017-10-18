@@ -202,8 +202,8 @@ void OTclass::InitOTSender()
 	cout<<"My Port: "<< m_nPort<<endl;
 	cout<<"Other Port: "<< m_nPort+1<<endl;
 	std::cout << "Other IP:"<<m_nAddr << std::endl;
-    m_spMe = SocketPartyData(IpAdress::from_string("127.0.0.1"), m_nPort);
-    m_spOther = SocketPartyData(IpAdress::from_string(m_nAddr), m_nPort+1);
+    m_spMe = SocketPartyData(IpAddress::from_string("127.0.0.1"), m_nPort);
+    m_spOther = SocketPartyData(IpAddress::from_string(m_nAddr), m_nPort+1);
     m_cpChannel = make_shared<CommPartyTCPSynced>(m_ioService, m_spMe, m_spOther);
 
     m_cpChannel->join(500, 5000);
@@ -218,13 +218,13 @@ void OTclass::InitOTReceiver()
 	cout<< "My port: " <<m_nPort+1<<endl;
 	cout<< "Other port: " <<m_nPort<<endl;
 	cout<< "other address: "<<m_nAddr<<endl;
-    m_spMe = SocketPartyData(IpAdress::from_string("127.0.0.1"), m_nPort+1);
-    m_spOther = SocketPartyData(IpAdress::from_string(m_nAddr), m_nPort);
+    m_spMe = SocketPartyData(IpAddress::from_string("127.0.0.1"), m_nPort+1);
+    m_spOther = SocketPartyData(IpAddress::from_string(m_nAddr), m_nPort);
     m_cpChannel = make_shared<CommPartyTCPSynced>(m_ioService, m_spMe, m_spOther);
 
     m_cpChannel->join(500, 5000);
 	// cout<<"fdjk"<<endl;
-    m_otReceiver = new OTExtensionBristolReciever(m_nAddr, m_nPort+2, true, m_cpChannel);
+    m_otReceiver = new OTExtensionBristolReceiver(m_nAddr, m_nPort+2, true, m_cpChannel);
 	// cout <<"TESTTT"<<endl;
 }
 /*
