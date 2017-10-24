@@ -174,8 +174,9 @@ void initializeCommunication(const char* filename, Circuit* c, int p)
 	for (int i = 0; i < numOfParties; i++)
 	{
 		fgets(buff, STRING_BUFFER_SIZE, f);
-		sscanf(buff, "%s\n", ip);
-		vector<string> splittedIp = split(ip,'=');
+//		sscanf(buff, "%s\n", ip);
+		vector<string> splittedIp = split(buff,'=');
+        splittedIp[1].pop_back();
 		addrs[i] = splittedIp[1];
 
 		ports[2 * i] = 8000 + i*numOfParties + partyNum;
