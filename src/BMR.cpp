@@ -143,6 +143,21 @@ void initializeCommunicationSerial(int* ports)//Use this for many parties
 	}
 }
 
+template<typename Out>
+void split(const std::string &s, char delim, Out result) {
+	stringstream ss(s);
+	string item;
+	while (std::getline(ss, item, delim)) {
+		*(result++) = item;
+	}
+}
+
+vector<std::string> split(const std::string &s, char delim) {
+	vector<std::string> elems;
+	split(s, delim, back_inserter(elems));
+	return elems;
+}
+
 
 void initializeCommunication(const char* filename, Circuit* c, int p)
 {
@@ -160,7 +175,8 @@ void initializeCommunication(const char* filename, Circuit* c, int p)
 	{
 		fgets(buff, STRING_BUFFER_SIZE, f);
 		sscanf(buff, "%s\n", ip);
-		addrs[i] = string(ip);
+		vector<string> splittedIp = split(ip,'=');
+		addrs[i] = splittedIp[1];
 
 		ports[2 * i] = 8000 + i*numOfParties + partyNum;
 		ports[2 * i + 1] = 8000 + partyNum*numOfParties + i;
