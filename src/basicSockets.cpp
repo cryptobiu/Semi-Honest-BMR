@@ -266,7 +266,7 @@ bool BmrNet::connectNow(){
 			sleep(1);
 	}
 
-	printf("Connected! %d",count);
+	printf("Connected!\n");
 
 	return true;
 
