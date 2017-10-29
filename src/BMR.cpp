@@ -185,7 +185,7 @@ void initializeCommunication(const char* filename, Circuit* c, int p)
 
 	fclose(f);
 	//if (numOfParties>20)
-	  initializeCommunicationSerial(ports);
+	  initializeCommunication(ports);
 
 	delete[] ports;
 }
