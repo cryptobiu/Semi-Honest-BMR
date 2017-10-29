@@ -252,11 +252,12 @@ bool BmrNet::connectNow(){
 
 	memset(&serv_addr, 0, sizeof(serv_addr));
 	serv_addr.sin_family		= AF_INET;
-	serv_addr.sin_addr.s_addr	= inet_addr(host);
+//	serv_addr.sin_addr.s_addr	= inet_addr(host);
+    inet_pton(AF_INET, host, &serv_addr.sin_addr);
 	serv_addr.sin_port			= htons(port); 
 	
 	int count = 0;
-	cout << "Trying to connect to server"<< endl; cout <<"IP:"<<host<<"port"<<port<< endl;
+	cout << "Trying to connect to server"<< endl; cout <<" IP: "<<host<<" port : "<<port<< endl;
 	while (connect(socketFd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
 	{
 			count++;
