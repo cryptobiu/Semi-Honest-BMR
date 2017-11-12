@@ -9,7 +9,6 @@
 #ifndef BMRNET_H_
 #define BMRNET_H_
 #include <stdio.h>
-#include <stropts.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 #include <net/if.h>
