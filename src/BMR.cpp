@@ -111,7 +111,7 @@ void initializeCommunication(int* ports)
 		if (i != partyNum)
 		{
 			threads[i * 2 + 1] = thread(initCommunication, addrs[i], ports[i * 2 + 1], i, 0);
-			threads[i * 2] = thread(initCommunication, "127.0.0.1", ports[i * 2], i, 1);
+			threads[i * 2] = thread(initCommunication, "", ports[i * 2], i, 1);
 		}
 	}
 	for (int i = 0; i < 2 * numOfParties; i++)
@@ -132,13 +132,13 @@ void initializeCommunicationSerial(int* ports)//Use this for many parties
 	{
 		if (i<partyNum)
 		{
-		  initCommunication( addrs[i], ports[i * 2 + 1], i,0);
-		  initCommunication("127.0.0.1", ports[i * 2], i, 1);
+		  initCommunication( addrs[i], ports[i * 2 + 1], i, 0);
+		  initCommunication("", ports[i * 2], i, 1);
 		}
 		else if (i>partyNum)
 		{
-		  initCommunication("127.0.0.1", ports[i * 2], i, 1);
-		  initCommunication( addrs[i], ports[i * 2 + 1], i,0);
+		  initCommunication("", ports[i * 2], i, 1);
+		  initCommunication( addrs[i], ports[i * 2 + 1], i, 0);
 		}
 	}
 }

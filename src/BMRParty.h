@@ -5,7 +5,7 @@
 #ifndef SCAPI_BMRPARTY_H
 #define SCAPI_BMRPARTY_H
 
-#include <libscapi/include/CryptoInfra/Protocol.hpp>
+#include <libscapi/include/cryptoInfra/Protocol.hpp>
 #include "secCompMultiParty.h"
 #include "BMR.h"
 #include "BMR_BGW.h"
