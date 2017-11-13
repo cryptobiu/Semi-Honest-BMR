@@ -116,6 +116,7 @@ void BMRParty::runOffline() {
 void BMRParty::runOnline() {
 
     //2 - load inputs from file
+
     loadInputs(arguments["inputsFile"].c_str(), cyc, p);
 
     //Start of online phase

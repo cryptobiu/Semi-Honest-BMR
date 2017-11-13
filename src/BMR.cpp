@@ -111,7 +111,7 @@ void initializeCommunication(int* ports)
 		if (i != partyNum)
 		{
 			threads[i * 2 + 1] = thread(initCommunication, addrs[i], ports[i * 2 + 1], i, 0);
-			threads[i * 2] = thread(initCommunication, "127.0.0.1", ports[i * 2], i, 1);
+			threads[i * 2] = thread(initCommunication, "", ports[i * 2], i, 1);
 		}
 	}
 	for (int i = 0; i < 2 * numOfParties; i++)
@@ -132,15 +132,30 @@ void initializeCommunicationSerial(int* ports)//Use this for many parties
 	{
 		if (i<partyNum)
 		{
-		  initCommunication( addrs[i], ports[i * 2 + 1], i,0);
-		  initCommunication("127.0.0.1", ports[i * 2], i, 1);
+		  initCommunication( addrs[i], ports[i * 2 + 1], i, 0);
+		  initCommunication("", ports[i * 2], i, 1);
 		}
 		else if (i>partyNum)
 		{
-		  initCommunication("127.0.0.1", ports[i * 2], i, 1);
-		  initCommunication( addrs[i], ports[i * 2 + 1], i,0);
+		  initCommunication("", ports[i * 2], i, 1);
+		  initCommunication( addrs[i], ports[i * 2 + 1], i, 0);
 		}
 	}
+}
+
+template<typename Out>
+void split(const std::string &s, char delim, Out result) {
+	stringstream ss(s);
+	string item;
+	while (std::getline(ss, item, delim)) {
+		*(result++) = item;
+	}
+}
+
+vector<std::string> split(const std::string &s, char delim) {
+	vector<std::string> elems;
+	split(s, delim, back_inserter(elems));
+	return elems;
 }
 
 
@@ -159,8 +174,10 @@ void initializeCommunication(const char* filename, Circuit* c, int p)
 	for (int i = 0; i < numOfParties; i++)
 	{
 		fgets(buff, STRING_BUFFER_SIZE, f);
-		sscanf(buff, "%s\n", ip);
-		addrs[i] = string(ip);
+//		sscanf(buff, "%s\n", ip);
+		vector<string> splittedIp = split(buff,'=');
+        splittedIp[1].pop_back();
+		addrs[i] = splittedIp[1];
 
 		ports[2 * i] = 8000 + i*numOfParties + partyNum;
 		ports[2 * i + 1] = 8000 + partyNum*numOfParties + i;
@@ -168,7 +185,7 @@ void initializeCommunication(const char* filename, Circuit* c, int p)
 
 	fclose(f);
 	//if (numOfParties>20)
-	  initializeCommunicationSerial(ports);
+	  initializeCommunication(ports);
 
 	delete[] ports;
 }

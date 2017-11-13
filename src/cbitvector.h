@@ -13,7 +13,7 @@
 #else
 #include "sha1.h"
 #endif
-#include "aes.h"
+#include <libscapi/install/include/openssl/aes.h>
 #include "typedefs.h"
 #include <math.h>
 #include <iostream>

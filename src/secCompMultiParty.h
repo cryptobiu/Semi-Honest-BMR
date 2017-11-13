@@ -15,9 +15,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <emmintrin.h>
-#include <iomanip>  //cout
+#include <iomanip>
 #include <iostream>
-#include "aes.h"
+#include <libscapi/install/include/openssl/aes.h>
 #include "TedKrovetzAesNiWrapperC.h"
 #include "myDefs.h"
 
