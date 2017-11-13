@@ -27,7 +27,8 @@ BMRParty::BMRParty(int argc, char* argv[]) : Protocol("Semi Honest BMR", argc, a
 
     VERSION(hm);
 
-
+    vector<string> subTaskNames{"Offline", "Online"};
+    timer = new Measurement("SemiHonestBMR", p, c->amountOfPlayers, 1, subTaskNames);
 
     if (hm == 0) //No honest majority - initialize OT-Extension based algorithm.
     {
@@ -45,8 +46,13 @@ BMRParty::BMRParty(int argc, char* argv[]) : Protocol("Semi Honest BMR", argc, a
 
 
 void BMRParty::run() {
+    timer->startSubTask();
     runOffline();
+    timer->endSubTask(0, 0);
+
+    timer->startSubTask();
     runOnline();
+    timer->endSubTask(1, 0);
 }
 
 void BMRParty::runOffline() {

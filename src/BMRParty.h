@@ -5,7 +5,8 @@
 #ifndef SCAPI_BMRPARTY_H
 #define SCAPI_BMRPARTY_H
 
-#include <libscapi/include/CryptoInfra/Protocol.hpp>
+#include <libscapi/include/cryptoInfra/Protocol.hpp>
+#include <libscapi/include/infra/Measurement.hpp>
 #include "secCompMultiParty.h"
 #include "BMR.h"
 #include "BMR_BGW.h"
@@ -15,6 +16,7 @@ class BMRParty : public Protocol, public SemiHonest, public MultiParty{
 private:
     //honest majority type, player number
     int p, hm;
+    Measurement* timer;
 //circuit
     Circuit* c;
 //the output
@@ -25,6 +27,9 @@ private:
 public:
 
     BMRParty(int argc, char* argv[]);
+    ~BMRParty(){
+        delete timer;
+    }
 
     void run() override;
 
