@@ -23,4 +23,5 @@ TARGET_LINK_LIBRARIES(SemiHonestBMR
         $ENV{HOME}/libscapi/libscapi.a gmp
         OTExtensionBristol
         $ENV{HOME}/libscapi/install/lib/libsimpleot.a
-        libboost_system.a libboost_thread.a pthread ntl libssl.a libcrypto.a dl z )
+        $ENV{HOME}/libscapi/install/lib/libjsoncpp.a
+        libboost_system.a libboost_thread.a pthread ntl libssl.a libcrypto.a dl z stdc++fs)
