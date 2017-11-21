@@ -12,15 +12,12 @@ set(SOURCE_FILES src/BMRParty.cpp src/basicSockets.cpp src/BMR.cpp src/BMR_BGW.c
         src/cbitvector.cpp src/main.cpp src/main_gf_funcs.cpp src/ottmain.cpp src/secCompMultiParty.cpp src/sha1.cpp
         src/TedKrovetzAesNiWrapperC.cpp)
 
-
 link_directories($ENV{HOME}/libscapi/install/lib)
-
 
 add_executable(SemiHonestBMR ${SOURCE_FILES})
 
-
 TARGET_LINK_LIBRARIES(SemiHonestBMR
         $ENV{HOME}/libscapi/libscapi.a gmp
-        OTExtensionBristol
+        OTExtensionBristol libjsoncpp.a
         $ENV{HOME}/libscapi/install/lib/libsimpleot.a
-        libboost_system.a libboost_thread.a pthread ntl libssl.a libcrypto.a dl z )
+        libboost_system.a libboost_thread.a pthread ntl libssl.a libcrypto.a dl z)

@@ -1,1 +1,10 @@
 src/obj/
+.idea/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+SemiHonestBMR
+SemiHonestBMR.cbp
+*.json
+cmake-build-debug/
+cmake_install.cmake

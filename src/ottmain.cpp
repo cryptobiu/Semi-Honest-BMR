@@ -41,7 +41,7 @@ OTclass::OTclass(char* address, int port, int mode)
 	m_nAddr = address;
 	m_nPort = port;
 	m_nPID = mode;
-	boost::thread t(boost::bind(&boost::asio::io_service::run, &m_ioService));
+//	boost::thread t(boost::bind(&boost::asio::io_service::run, &m_ioService));
 }
 OTclass::OTclass(char * address, int port, int mode, const char * seed)
 { /*
@@ -61,7 +61,7 @@ OTclass::OTclass(char * address, int port, int mode, const char * seed)
 	m_nPort = port;
 	m_nPID = mode;
 	m_nSeed = seed;
-	boost::thread t(boost::bind(&boost::asio::io_service::run, &m_ioService));
+//	boost::thread t(boost::bind(&boost::asio::io_service::run, &m_ioService));
 }
 OTclass::~OTclass()
 {

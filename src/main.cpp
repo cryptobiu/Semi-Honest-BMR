@@ -1,13 +1,3 @@
-//#include "ottmain.h"
-//#include <thread>
-//#include "secCompMultiParty.h"
-//#include "BMR.h"
-//#include "BMR_BGW.h"
-//#include <math.h>
-//
-////LOCK
-//#include <sys/types.h>
-//#include <sys/stat.h>
 #include "BMRParty.h"
 
 using namespace std;

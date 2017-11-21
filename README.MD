@@ -12,7 +12,7 @@ In the experimentation branch, compilation is done using the cmake file ("cmake 
 Running is done by executing
 
 ./SemiHonestBMR -partyID \<Partynum\> -circuitFile \<CircuitFile\> -inputsFile \<InputsFile\> -partiesFile \<IPFile\> 
--key \<Key\> -version \<Version Number\>
+-key \<Key\> -version \<Version Number\> -internalIterationsNumber \<Internal Iterations Number\>
 
 Partynum is the party number. This number should also match the location of the party's IP in the IP file. 
 For non-local execution, it is possible to use "-1" and the party number is taken as the location in the IP file.

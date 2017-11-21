@@ -11,6 +11,7 @@ BMRParty::BMRParty(int argc, char* argv[]) : Protocol("Semi Honest BMR", argc, a
 
     //1 - Read the circuit from the file
     c = loadCircuit(arguments["circuitFile"].c_str());
+    times = stoi(arguments["internalIterationsNumber"]);
 
     cout << "Number parties: " << c->amountOfPlayers << endl;
     cout << "Number of AND gates: " << c->numOfANDGates << endl;
@@ -24,10 +25,7 @@ BMRParty::BMRParty(int argc, char* argv[]) : Protocol("Semi Honest BMR", argc, a
     //check adversary model
     hm = 0;
     if (argc > 6) hm = stoi(arguments["version"]);
-
     VERSION(hm);
-
-
 
     if (hm == 0) //No honest majority - initialize OT-Extension based algorithm.
     {
@@ -40,13 +38,16 @@ BMRParty::BMRParty(int argc, char* argv[]) : Protocol("Semi Honest BMR", argc, a
         InitializeBGW(hm);//Honest majority - we will use BGW
     }
 
+    vector<string> subTaskNames{"Offline", "Online"};
+    timer = new Measurement("SemiHonestBMR", p, c->amountOfPlayers, times, subTaskNames);
+
 
 }
 
 
 void BMRParty::run() {
-    runOffline();
-    runOnline();
+        runOffline();
+        runOnline();
 }
 
 void BMRParty::runOffline() {
@@ -54,55 +55,55 @@ void BMRParty::runOffline() {
     synchronize();
 
     //Start offline phase
-    auto start = scapi_now();
-
-    //4 - load random R, random seeds, random lambdas and compute lambdas/seed of XOR gates
-    newLoadRandom();
-
-
-    //here the regular gates go
-    //5 - compute AES of Ag,Bg,Cg,Dg for multiplication gates
-    computeGates();//Me & Roi - Requires AES...
+    for (int iterationIdx = 0; iterationIdx < times; ++iterationIdx) {
+        timer->startSubTask(0, iterationIdx);
+        //4 - load random R, random seeds, random lambdas and compute lambdas/seed of XOR gates
+        newLoadRandom();
 
 
-    //NEW
-    if (hm == 0)//Run OT based protocol
-    {
+        //here the regular gates go
+        //5 - compute AES of Ag,Bg,Cg,Dg for multiplication gates
+        computeGates();//Me & Roi - Requires AES...
 
-        //6 - multiply the lambdas for multiplication gates - uses OT
-        mulLambdasC();
 
-        mulRC();
+        //NEW
+        if (hm == 0)//Run OT based protocol
+        {
 
-        //8 - send and receive gates
-        exchangeGates();
+            //6 - multiply the lambdas for multiplication gates - uses OT
+            mulLambdasC();
 
-    } else {//Run BGW based protocol
+            mulRC();
 
-        //5.2 Create secret-sharings of correct degrees and send/receive
-        secretShare();//secret-share lambdas, R, and PRGs - first communication round
+            //8 - send and receive gates
+            exchangeGates();
 
-        //6 - multiply the lambdas for multiplication gates - local computation
-        mulLambdasBGW();//local computation
+        } else {//Run BGW based protocol
 
-        if (hm == 1 || hm==3) {//BGW 3 or BGW 4 - need to do degree reduction
+            //5.2 Create secret-sharings of correct degrees and send/receive
+            secretShare();//secret-share lambdas, R, and PRGs - first communication round
 
-            //6.2 - reduce degree of share polynomials (not needed if >2/3 honest)
-            reduceDegBGW();
+            //6 - multiply the lambdas for multiplication gates - local computation
+            mulLambdasBGW();//local computation
 
+            if (hm == 1 || hm == 3) {//BGW 3 or BGW 4 - need to do degree reduction
+
+                //6.2 - reduce degree of share polynomials (not needed if >2/3 honest)
+                reduceDegBGW();
+
+            }
+
+            //7 - according to lambdas multiplication, multiply R for multiplication gates. Add results to Ag,Bg,Cg,Dg respectively.
+            if (hm != 3)
+                mulRBGW();//local computation
+            else
+                mulRBGWwithReduction();//run BGW4 with an extra reduction step
+
+            //8 - send and receive gates
+            exchangeGatesBGW();//communication round, also exchanges the output lambdas, and reconstructs the gates
         }
-
-        //7 - according to lambdas multiplication, multiply R for multiplication gates. Add results to Ag,Bg,Cg,Dg respectively.
-        if (hm != 3)
-            mulRBGW();//local computation
-        else
-            mulRBGWwithReduction();//run BGW4 with an extra reduction step
-
-        //8 - send and receive gates
-        exchangeGatesBGW();//communication round, also exchanges the output lambdas, and reconstructs the gates
+        timer->endSubTask(0, iterationIdx);
     }
-
-    print_elapsed_ms(start, "Offline time: ");
 
 //end offline phase
 }
@@ -114,19 +115,21 @@ void BMRParty::runOnline() {
     loadInputs(arguments["inputsFile"].c_str(), cyc, p);
 
     //Start of online phase
-    auto start = scapi_now();
-    // synchronize();
+    for (int iterationIdx = 0; iterationIdx < times; ++iterationIdx)
+    {
+        // synchronize();
+        timer->startSubTask(1, iterationIdx);
+        //9 - reveal Inputs (XORed with lambda)
+        exchangeInputs();
 
-    //9 - reveal Inputs (XORed with lambda)
-    exchangeInputs();
+        //10 - reveal corresponding seeds
+        exchangeSeeds();
 
-    //10 - reveal corresponding seeds
-    exchangeSeeds();
+        //11 - compute output
+        out = computeOutputs();
 
-    //11 - compute output
-    out = computeOutputs();
-
-    print_elapsed_ms(start, "Online time: ");
+        timer->endSubTask(1, iterationIdx);
+    }
 
     cout << "Outputs:" << endl;
 

@@ -2,6 +2,6 @@
 
 for i in `seq $1 1 $2`;
 do
-	./SemiHonestBMR -partyID ${i} -circuitFile ${3} -inputsFile ${4} -partiesFile ${5} -key ${6} -version ${7} &
+	./SemiHonestBMR -partyID ${i} -circuitFile ${3} -inputsFile ${4} -partiesFile ${5} -key ${6} -version ${7} -internalIterationsNumber ${8} &
 	echo "Running $i..."
 done

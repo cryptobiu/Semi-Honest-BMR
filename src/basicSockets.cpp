@@ -192,7 +192,7 @@ bool BmrNet::listenNow(){
 	///
 	listen(serverSockFd,5);
 	clilen = sizeof(cli_addr);
-	printf("Start listening!");
+	printf("Start listening!\n");
 	this->socketFd = accept(serverSockFd,
 			(struct sockaddr *) &cli_addr,
 			 &clilen);
@@ -200,18 +200,7 @@ bool BmrNet::listenNow(){
 		cout<<"ERROR on accept"<<endl;
 		return false;
 	}
-	//use TCP_NODELAY on the socket 
-	int flag = 1;
-	int result = setsockopt(this->socketFd,            /* socket affected */
-                          IPPROTO_TCP,     /* set option at TCP level */
-                          TCP_NODELAY,     /* name of option */
-                          (char *) &flag,  /* the cast is historical */
-                          sizeof(int));    /* length of option value */
-	if (result < 0) {
-	    cout << "error setting NODELAY. exiting" << endl;
-	    exit (-1);
-	}
-
+	//use TCP_NODELAY on the socket
 	printf("Connected!");
 
 	close(serverSockFd);
@@ -230,40 +219,38 @@ bool BmrNet::connectNow(){
 	}
 
 	//fprintf(stderr,"usage %s hostname port\n", host);
-	socketFd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	socketFd = socket(AF_INET, SOCK_STREAM, 0);
 
 	if (socketFd < 0){
 		cout<<("ERROR opening socket")<<endl;
 		return false;
 	}
 
-	//use TCP_NODELAY on the socket 
-	int flag = 1;
-	int result = setsockopt(socketFd,            /* socket affected */
-                          IPPROTO_TCP,     /* set option at TCP level */
-                          TCP_NODELAY,     /* name of option */
-                          (char *) &flag,  /* the cast is historical */
-                          sizeof(int));    /* length of option value */
-	if (result < 0) {
-	    cout << "error setting NODELAY. exiting" << endl;
-	    exit (-1);
-       }
-	
-
 	memset(&serv_addr, 0, sizeof(serv_addr));
 	serv_addr.sin_family		= AF_INET;
-//	serv_addr.sin_addr.s_addr	= inet_addr(host);
-    inet_pton(AF_INET, host, &serv_addr.sin_addr);
-	serv_addr.sin_port			= htons(port); 
+	//serv_addr.sin_addr.s_addr	= inet_addr(host);
+    serv_addr.sin_port			= htons(port);
+    cout << "host is : " << host << endl;
+    if (inet_pton(AF_INET, host, &serv_addr.sin_addr) <=0)
+    {
+        cout << "inet_pton error code is : " << errno << endl;
+        return false;
+
+    }
+
 	
 	int count = 0;
 	cout << "Trying to connect to server"<< endl; cout <<" IP: "<<host<<" port : "<<port<< endl;
-	while (connect(socketFd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
+    auto errorCode = connect(socketFd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
+	while (errorCode < 0)
 	{
-			count++;
-			if (count%50==0)
-			    cout << "Not managing to connect. " << "Count=" << count << endl;
-			sleep(1);
+        cout << "Error code is : " << errno << endl;
+        count++;
+        if (count%50==0)
+            cout << "Not managing to connect. " << "Count=" << count << endl;
+        sleep(1);
+        errorCode = connect(socketFd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
+
 	}
 
 	printf("Connected!\n");
