@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 2.8)
 project(SemiHonestBMR)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3 -msse4.1 -mavx -pthread -maes -msse2 -mpclmul \
--fpermissive -fpic -Wno-endif-labels -Wno-conversion-null -Wno-write-strings")
+-fpermissive -fpic -Wno-endif-labels -Wno-conversion-null -Wno-write-strings -Wno-unused-result \
+-Wno-aggressive-loop-optimizations")
 
 
-INCLUDE_DIRECTORIES($ENV{HOME} $ENV{HOME}/libscapi/lib/OTExtensionBristol $ENV{HOME}/libscapi/lib/
-        $ENV{HOME}/libscapi/install/include)
+INCLUDE_DIRECTORIES($ENV{HOME} $ENV{HOME}/libscapi/lib/OTExtensionBristol $ENV{HOME}/libscapi/install/include)
 
 set(SOURCE_FILES src/BMRParty.cpp src/basicSockets.cpp src/BMR.cpp src/BMR_BGW.cpp src/BMR_BGW_aux.cpp
         src/cbitvector.cpp src/main.cpp src/main_gf_funcs.cpp src/ottmain.cpp src/secCompMultiParty.cpp src/sha1.cpp

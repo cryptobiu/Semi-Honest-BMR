@@ -16,21 +16,24 @@ class BMRParty : public Protocol, public SemiHonest, public MultiParty{
 private:
     //honest majority type, player number
     int p, hm;
+    Measurement* timer;
+    //circuit
     Circuit* c;
     bool *out;
     int times;
-    Measurement *timer;
 
 
 public:
 
     BMRParty(int argc, char* argv[]);
+    ~BMRParty(){
+        delete timer;
+    }
     void run() override;
     bool hasOffline() override { return true; }
     void runOffline() override;
     bool hasOnline() override { return true; }
     void runOnline() override;
-    ~BMRParty(){delete timer;}
 
 };
 
